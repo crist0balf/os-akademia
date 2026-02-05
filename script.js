@@ -14,7 +14,7 @@ const moduly = [
       { id: 'uvod_definicia', label: 'Definícia a Funkcie' },
       { id: 'uvod_historia', label: 'História Vývoja' },
       { id: 'uvod_rozdelenie', label: 'Rozdelenia OS' },
-      { id: 'uvod_test', label: 'Online Test' },
+      { id: 'uvod_test', label: 'Preverenie vedomostí' },
     ],
   },
   {
@@ -24,7 +24,7 @@ const moduly = [
       { id: 'windows_historia', label: 'História' },
       { id: 'windows_verzie', label: 'Verzie' },
       { id: 'windows_info', label: 'Informácie' },
-      { id: 'windows_test', label: 'Online Test' },
+      { id: 'windows_test', label: 'Preverenie vedomostí' },
     ],
   },
   {
@@ -34,7 +34,7 @@ const moduly = [
       { id: 'linux_historia', label: 'História' },
       { id: 'linux_verzie', label: 'Verzie' },
       { id: 'linux_info', label: 'Informácie' },
-      { id: 'linux_test', label: 'Online Test' },
+      { id: 'linux_test', label: 'Preverenie vedomostí' },
     ],
   },
   {
@@ -44,7 +44,7 @@ const moduly = [
       { id: 'macos_historia', label: 'História' },
       { id: 'macos_verzie', label: 'Verzie' },
       { id: 'macos_info', label: 'Informácie' },
-      { id: 'macos_test', label: 'Online Test' },
+      { id: 'macos_test', label: 'Preverenie vedomostí' },
     ],
   },
   {
@@ -54,7 +54,7 @@ const moduly = [
       { id: 'specialne_reactos', label: 'ReactOS' },
       { id: 'specialne_haiku', label: 'Haiku OS' },
       { id: 'specialne_templeos', label: 'TempleOS' },
-      { id: 'specialne_test', label: 'Online Test' },
+      { id: 'specialne_test', label: 'Preverenie vedomostí' },
     ],
   },
   {
@@ -518,6 +518,7 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
 
 /* 3. Funkcia na vyhodnotenie finálneho testu */
 function vyhodnotFinalnyTest() {
+  clearInterval(casovacInterval);
   const otazky = databazaTestov['finalny_test'];
   let pocetSpravnych = 0;
   
@@ -583,10 +584,50 @@ function vyhodnotFinalnyTest() {
   kontajnerVysledku.scrollIntoView({ behavior: 'smooth' });
 }
 
+/* Funkcia na odpočítavanie času */
+function spustitCasovac(minuty) {
+  // Najprv zrušíme starý časovač, ak beží
+  clearInterval(casovacInterval);
+  
+  let sekundyCelkovo = minuty * 60;
+  const displej = document.getElementById('casovac-displej');
+  
+  // Ak tam nie je displej (napr. sme odišli zo sekcie), skonči
+  if (!displej) return;
+
+  function aktualizuj() {
+    // Výpočet minút a sekúnd
+    const m = Math.floor(sekundyCelkovo / 60);
+    const s = sekundyCelkovo % 60;
+    
+    // Formátovanie (aby bolo 05 namiesto 5)
+    displej.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+    // Zmena farby, keď ostáva málo času (posledná minúta)
+    if (sekundyCelkovo < 60) {
+      displej.style.color = '#ff6b6b'; // Červená
+    }
+
+    // Koniec času
+    if (sekundyCelkovo <= 0) {
+      clearInterval(casovacInterval);
+      alert("⏳ Čas vypršal! Test sa teraz automaticky ukončí.");
+      vyhodnotFinalnyTest(); // Automaticky vyhodnotí a zablokuje tlačidlá
+    }
+
+    sekundyCelkovo--;
+  }
+
+  // Spustíme hneď a potom každú sekundu
+  aktualizuj();
+  casovacInterval = setInterval(aktualizuj, 1000);
+}
+
 let tmavyRezim = false;
 let aktivnaSekcia = 'informacie';
 let rozbaleneModuly = { modul0: false };
 let hesloOdblokované = false;
+let casovacInterval;
 
 /* Načítaj voľbu tmavého režimu */
 function nacitajRezim() {
@@ -712,6 +753,7 @@ function renderujBocnyPanel() {
 
 /* Renderovanie obsahu */
 function renderujObsah() {
+  clearInterval(casovacInterval);
   const obsahDiv = document.getElementById('obsah');
   obsahDiv.innerHTML = '';
 
@@ -732,15 +774,6 @@ function renderujObsah() {
             <li><strong>3. Linux</strong> – Open-source OS dominujúci na serveroch</li>
             <li><strong>4. Mac OS</strong> – OS pre počítače Apple</li>
             <li><strong>5. Špeciálne / Neznáme OS</strong> – Ďalšie zaujímavé operačné systémy</li>
-          </ul>
-
-          <h3>Ako sa učiť?</h3>
-          <p>Každý modul obsahuje štyri časti:</p>
-          <ul>
-            <li><strong>História</strong> – Dozviete sa, ako OS vznikol a vyvíjal</li>
-            <li><strong>Verzie</strong> – Tabuľka s jednotlivými verziami a dátumami</li>
-            <li><strong>Informácie</strong> – Detailné informácie o OS</li>
-            <li><strong>Online Test</strong> – Overite si svoje vedomosti</li>
           </ul>
 
           <h3>Tmavý režim</h3>
@@ -780,7 +813,7 @@ function renderujObsah() {
             Najdôležitejšou časťou každého OS je <strong>Jadro (Kernel)</strong>.
           </p>
           <p>
-            Je to prvá časť systému, ktorá sa načíta do pamäte pri zapnutí počítača, a ostáva tam až do vypnutia. Kernel má, na rozdiel od bežných programov, <strong>neobmedzený prístup</strong> k hardvéru. Ak spadne prehliadač, kernel ho zavrie. Ak spadne kernel (chyba v jadre), zrúti sa celý počítač (napr. Modrá smrť vo Windows).
+            Je to prvá časť systému, ktorá sa načíta do pamäte pri zapnutí počítača a zostáva tam až do vypnutia. Kernel má, na rozdiel od bežných programov, <strong>neobmedzený prístup</strong> k hardvéru. Ak spadne prehliadač, kernel ho zavrie. Ak spadne kernel (chyba v jadre), zrúti sa celý počítač (napr. Modrá smrť vo Windows).
           </p>
         </div>
       </section>
@@ -916,8 +949,7 @@ function renderujObsah() {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
         <div class="karta">
-          <h2>Informácie o Operačných Systémoch – Online Test</h2>
-          <p>Otestujte si svoje vedomosti z histórie, funkcií a rozdelenia operačných systémov. Test obsahuje 10 otázok.</p>
+          <h2>Informácie o Operačných Systémoch – Preverenie vedomostí</h2>
           
           ${vygenerujHTMLTestu('uvod_test')}
 
@@ -944,7 +976,7 @@ function renderujObsah() {
             Keď IBM v roku 1981 uviedlo svoj PC, bežalo na systéme MS-DOS od Microsoftu. Bill Gates však videl demonštráciu grafického rozhrania (GUI) v laboratóriách Xerox PARC a neskôr u Apple. Pochopil, že ak chce Microsoft prežiť, musí vytvoriť "grafickú vrstvu". Pôvodný názov projektu bol <em>Interface Manager</em>, ale marketingový stratég Rowland Hanson presadil názov <strong>Windows</strong>, pretože systém pracoval s viacerými oknami na obrazovke.
           </p>
           <p>
-            <strong>Windows 1.0 (1985)</strong> bol však sklamaním. Okná sa nemohli prekrývať (kvôli hrozbe žaloby od Apple), navigácia bola neohrabaná a aplikácií bolo málo. Skutočný úspech prišiel až s verziou <strong>3.0 a 3.1</strong> v 90. rokoch, ktoré po prvýkrát priniesli skutočný multitasking a ikonické prostredie, ktoré definovalo modernú prácu v kancelárii.
+            <strong>Windows 1.0 (1985)</strong> bol však sklamaním. Okná sa nemohli prekrývať (kvôli hrozbe žaloby od Apple), navigácia bola neohrabaná a aplikácií bolo málo. Skutočný úspech prišiel až s verziami <strong>3.0 a 3.1</strong> v 90. rokoch, ktoré po prvýkrát priniesli skutočný multitasking a ikonické prostredie, ktoré definovalo modernú prácu v kancelárii.
           </p>
 
           <h3>Zmena paradigmy: Windows 95 a internetová vojna</h3>
@@ -961,8 +993,8 @@ function renderujObsah() {
             Málokto vie, že Microsoft dlho vyvíjal dva úplne odlišné systémy súčasne. 
           </p>
           <ul>
-            <li><strong>Línia 9x (95, 98, ME):</strong> Bola postavená na starých základoch DOSu. Bola skvelá na hry, ale často "padala" a mala slabé zabezpečenie.</li>
-            <li><strong>Línia NT (New Technology):</strong> Bola vyvíjaná od nuly pod vedením Davea Cutlera (ex-Digital Equipment). Bola nesmierne stabilná, bezpečná a určená pre servery a pracovné stanice.</li>
+            <li><strong>Línia 9x (95, 98, ME):</strong> Vychádzala zo starých základov DOSu. Vynikala pri hrách, ale často "padala" a mala slabé zabezpečenie.</li>
+            <li><strong>Línia NT (New Technology):</strong> Vznikala od nuly pod vedením Davea Cutlera (ex-Digital Equipment). Vyznačovala sa extrémnou stabilitou, bezpečnosťou a bola určená pre servery a pracovné stanice.</li>
           </ul>
           <p>
             K historickému zjednoteniu došlo v roku 2001 s príchodom <strong>Windows XP</strong>. Microsoft zobral stabilné jadro NT a obliekol ho do farebného, užívateľsky prívetivého prostredia. XP sa stal takým úspešným, že paradoxne brzdil inovácie na ďalších 10 rokov, pretože nikto nemal potrebu zo stabilného systému prechádzať inam.
@@ -1134,8 +1166,7 @@ function renderujObsah() {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
         <div class="karta">
-          <h2>Windows – Online Test</h2>
-          <p>Otestujte si svoje vedomosti o histórii, verziách a technických detailoch systému Windows. Test obsahuje 10 otázok.</p>
+          <h2>Windows – Preverenie vedomostí</h2>
 
           ${vygenerujHTMLTestu('windows_test')}
 
@@ -1211,7 +1242,7 @@ function renderujObsah() {
         <div class="karta">
           <h2>Linux nemá verzie, má "Distribúcie"</h2>
           <p>
-            Vo svete Windows dostanete jeden hotový systém od jednej firmy. V Linuxe to funguje inak. Pretože je kód otvorený, ktokoľvek môže zobrať jadro Linuxu, pridať k nemu grafické prostredie, sadu programov a vytvoriť vlastný operačný systém. Tieto varianty sa nazývajú <strong>distribúcie</strong> (alebo "distrá").
+            Vo svete Windows dostanete jeden hotový systém od jednej firmy. V Linuxe to funguje inak. Keďže je kód otvorený, ktokoľvek môže zobrať jadro Linuxu, pridať k nemu grafické prostredie, sadu programov a vytvoriť vlastný operačný systém. Tieto varianty sa nazývajú <strong>distribúcie</strong> (alebo "distrá").
           </p>
 
           <h3>Rodokmeň distribúcií</h3>
@@ -1342,8 +1373,7 @@ function renderujObsah() {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
         <div class="karta">
-          <h2>Linux – Online Test</h2>
-          <p>Otestujte si vedomosti o open-source systéme, príkazovom riadku a histórii tučniaka Tuxa. Test obsahuje 10 otázok.</p>
+          <h2>Linux – Preverenie vedomostí</h2>
 
           ${vygenerujHTMLTestu('linux_test')}
 
@@ -1547,8 +1577,7 @@ function renderujObsah() {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
         <div class="karta">
-          <h2>Mac OS – Online Test</h2>
-          <p>Otestujte si vedomosti o systéme od Apple, jeho histórii, prechode na vlastné čipy a unikátnom ekosystéme.</p>
+          <h2>Mac OS – Preverenie vedomostí</h2>
 
           ${vygenerujHTMLTestu('macos_test')}
 
@@ -1751,8 +1780,7 @@ function renderujObsah() {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
         <div class="karta">
-          <h2>Špeciálne OS – Online Test</h2>
-          <p>Tento test je náročnejší. Obsahuje <strong>15 otázok</strong> (5 pre ReactOS, 5 pre Haiku a 5 pre TempleOS). Zvládnete odpovedať správne na všetky?</p>
+          <h2>Špeciálne OS – Preverenie vedomostí</h2>
 
           ${vygenerujHTMLTestu('specialne_test')}
 
@@ -1767,8 +1795,12 @@ function renderujObsah() {
           <section class="sekcia-obsahu aktivny">
             <div class="karta">
               <h2>Záverečný Test Akadémie</h2>
-              <p>Gratulujeme k odomknutiu finálneho testu! Čaká vás <strong>20 otázok</strong> zo všetkých oblastí.</p>
-              <p>Odpovedzte na otázky a na konci stlačte tlačidlo pre vyhodnotenie.</p>
+              
+              <div id="casovac-kontajner">
+                ⏱️ Zostávajúci čas: <span id="casovac-displej">20:00</span>
+              </div>
+
+              <p>Gratulujeme k odomknutiu finálneho testu! Máte <strong>20 minút</strong> na vypracovanie.</p>
               
               <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
 
@@ -1785,7 +1817,11 @@ function renderujObsah() {
             </div>
           </section>
         `;
+        // SPUSTENIE ČASOVAČA (20 minút)
+        spustitCasovac(20);
+
       } else {
+        // ... tu ostáva kód pre zamknutú časť (heslo) ...
         obsahDiv.innerHTML = `
           <section class="sekcia-obsahu aktivny">
             <div class="karta">
