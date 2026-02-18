@@ -459,7 +459,7 @@ const databazaTestov = {
   ]
 };
 
-/* 1. Funkcia na vygenerovanie HTML */ 
+/* Funkcia na vygenerovanie HTML */ 
 function vygenerujHTMLTestu(idSekcie) {
   const otazky = databazaTestov[idSekcie];
   if (!otazky) return '<p>Test sa pripravuje.</p>';
@@ -486,7 +486,7 @@ function vygenerujHTMLTestu(idSekcie) {
   return html;
 }
 
-/* 2. Funkcia na kontrolu odpovede */
+/* Funkcia na kontrolu odpovede */
 function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
   const rodic = tlacidlo.parentElement;
   const vsetkyTlacidla = rodic.querySelectorAll('.tlacidlo-test');
@@ -516,7 +516,7 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
   }
 }
 
-/* 3. Funkcia na vyhodnotenie finálneho testu */
+/* Funkcia na vyhodnotenie finálneho testu */
 function vyhodnotFinalnyTest() {
   clearInterval(casovacInterval);
   const otazky = databazaTestov['finalny_test'];
@@ -586,39 +586,28 @@ function vyhodnotFinalnyTest() {
 
 /* Funkcia na odpočítavanie času */
 function spustitCasovac(minuty) {
-  // Najprv zrušíme starý časovač, ak beží
   clearInterval(casovacInterval);
   
   let sekundyCelkovo = minuty * 60;
   const displej = document.getElementById('casovac-displej');
-  
-  // Ak tam nie je displej (napr. sme odišli zo sekcie), skonči
   if (!displej) return;
 
   function aktualizuj() {
-    // Výpočet minút a sekúnd
     const m = Math.floor(sekundyCelkovo / 60);
     const s = sekundyCelkovo % 60;
-    
-    // Formátovanie (aby bolo 05 namiesto 5)
     displej.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-
-    // Zmena farby, keď ostáva málo času (posledná minúta)
     if (sekundyCelkovo < 60) {
-      displej.style.color = '#ff6b6b'; // Červená
+      displej.style.color = '#ff6b6b';
     }
-
-    // Koniec času
     if (sekundyCelkovo <= 0) {
       clearInterval(casovacInterval);
       alert("⏳ Čas vypršal! Test sa teraz automaticky ukončí.");
-      vyhodnotFinalnyTest(); // Automaticky vyhodnotí a zablokuje tlačidlá
+      vyhodnotFinalnyTest();
     }
 
     sekundyCelkovo--;
   }
 
-  // Spustíme hneď a potom každú sekundu
   aktualizuj();
   casovacInterval = setInterval(aktualizuj, 1000);
 }
@@ -701,27 +690,22 @@ function renderujBocnyPanel() {
     const modulDiv = document.createElement('div');
     modulDiv.className = 'bocny-panel-modul';
 
-    // Logika pre svietenie hlavného tlačidla:
     let jeAktivnyHlavny = false;
 
     if (modul.id === 'modul0' || modul.id === 'modul6') {
-      // Pre Informácie a Finálny test: Svieti, ak je otvorená ich sekcia
       jeAktivnyHlavny = (aktivnaSekcia === modul.items[0].id);
     } else {
-      // Pre Windows, Linux atď: Svieti, ak je rozbalený
       jeAktivnyHlavny = rozbaleneModuly[modul.id];
     }
 
     const tlacidloModulu = document.createElement('button');
     tlacidloModulu.className = `nazov-modulu ${jeAktivnyHlavny ? 'aktivny' : ''}`;
 
-    // Moduly bez podsekcií (Informácie a Finálny Test)
     if (modul.id === 'modul0' || modul.id === 'modul6') {
       tlacidloModulu.innerHTML = `<span>${modul.title}</span>`;
       tlacidloModulu.style.cursor = 'pointer';
       tlacidloModulu.onclick = () => zobrazObsah(modul.items[0].id);
     } else {
-      // Moduly s podsekciami (Windows, Linux...)
       tlacidloModulu.innerHTML = `
         <span>${modul.title}</span>
         <span class="sipka-modulu ${rozbaleneModuly[modul.id] ? 'otvorene' : ''}">▼</span>
@@ -734,7 +718,6 @@ function renderujBocnyPanel() {
 
     modul.items.forEach((polozka) => {
       const tlacidloPolozky = document.createElement('button');
-      // Tu sa kontroluje, či má svietiť podsekcia (napr. História)
       tlacidloPolozky.className = `polozka-podmenu ${aktivnaSekcia === polozka.id ? 'aktivny' : ''}`;
       tlacidloPolozky.textContent = polozka.label;
       tlacidloPolozky.onclick = () => zobrazObsah(polozka.id);
@@ -757,9 +740,7 @@ function renderujObsah() {
   const obsahDiv = document.getElementById('obsah');
   obsahDiv.innerHTML = '';
 
-  /*=============================
-    INFORMÁCIE
-    =============================*/
+  /*INFORMÁCIE*/
   if (aktivnaSekcia === 'informacie') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -783,9 +764,7 @@ function renderujObsah() {
     `;
   }
 
-  /*=============================
-    ČO JE OPERAČNÝ SYSTÉM
-    =============================*/
+  /*ČO JE OPERAČNÝ SYSTÉM*/
   else if (aktivnaSekcia === 'uvod_definicia') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -815,6 +794,7 @@ function renderujObsah() {
           <p>
             Je to prvá časť systému, ktorá sa načíta do pamäte pri zapnutí počítača a zostáva tam až do vypnutia. Kernel má, na rozdiel od bežných programov, <strong>neobmedzený prístup</strong> k hardvéru. Ak spadne prehliadač, kernel ho zavrie. Ak spadne kernel (chyba v jadre), zrúti sa celý počítač (napr. Modrá smrť vo Windows).
           </p>
+          <img src="obrazky/1.webp" alt="diagram pre Kernel" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -875,6 +855,7 @@ function renderujObsah() {
           <p>
             Vedenie Xeroxu tomu neverilo, ale <strong>Steve Jobs</strong> (Apple) to uvidel počas exkurzie a pochopil, že toto je budúcnosť. Neskôr sa inšpiroval aj <strong>Bill Gates</strong> (Microsoft) a zvyšok je história.
           </p>
+          <img src="obrazky/2.webp" alt="Retro grafické prostredie Xerox Alto" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -940,6 +921,7 @@ function renderujObsah() {
             <li><strong>Kde ich nájdete:</strong> Inteligentné chladničky, routery, bankomaty, semafory, robotické vysávače.</li>
             <li><strong>Príklady:</strong> Embedded Linux, Windows IoT, TinyOS.</li>
           </ul>
+          <img src="obrazky/3.png" alt="Rozdelenia OS" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -958,9 +940,7 @@ function renderujObsah() {
     `;
   }
 
-  /*=============================
-    WINDOWS 
-    =============================*/
+  /*WINDOWS*/
   else if (aktivnaSekcia === 'windows_historia') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -986,7 +966,7 @@ function renderujObsah() {
           <p>
             V tomto období sa odohrala aj tzv. "Vojna prehliadačov". Microsoft si uvedomil silu internetu neskoro, ale razantne. Integroval <strong>Internet Explorer</strong> priamo do systému Windows 98, čím prakticky zlikvidoval konkurenčný Netscape. Tento krok viedol k historickému antimonopolnému súdu v USA, kde bol Microsoft obvinený zo zneužívania dominantného postavenia na trhu.
           </p>
-          
+          <img src="obrazky/4.png" alt="Štart menu vo Windows 95" class="obrazok-v-texte">
 
           <h3>Rozkol jadier: 9x vs. NT</h3>
           <p>
@@ -1094,6 +1074,7 @@ function renderujObsah() {
             </table>
             <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">Zdroj dát: Microsoft Release Information</p>
           </div>
+          <img src="obrazky/5.webp" alt="Evolúcia loga Windows" class="obrazok-v-texte">
 
           <h3>Architektonický zlom: 9x vs. NT</h3>
           <p>
@@ -1157,6 +1138,7 @@ function renderujObsah() {
           <p>
             Slávna "Modrá obrazovka smrti" (Blue Screen of Death) v skutočnosti nie je chyba, ale <strong>obranný mechanizmus</strong>. Nastane, keď jadro systému zistí kritickú chybu, ktorú nevie opraviť. Aby sa predišlo trvalému poškodeniu hardvéru alebo dát, systém sa radšej okamžite zastaví a reštartuje.
           </p>
+          <img src="obrazky/6.jpg" alt="Modrá smrť" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1175,9 +1157,7 @@ function renderujObsah() {
     `;
   }
 
-  /*=============================
-    LINUX
-    =============================*/
+  /*LINUX*/
   else if (aktivnaSekcia === 'linux_historia') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -1213,6 +1193,7 @@ function renderujObsah() {
           <p>
             To spustilo lavínu. Tisíce vývojárov po celom svete začali posielať opravy a vylepšenia. Zatiaľ čo Microsoft zamestnával stovky programátorov v jednej budove, na Linuxe pracovali tisíce ľudí cez internet, 24 hodín denne.
           </p>
+          <img src="obrazky/7.png" alt="GNU / Linux" class="obrazok-v-texte">
 
           <h3>4. Tux a komercializácia</h3>
           <p>
@@ -1303,6 +1284,7 @@ function renderujObsah() {
           <p>
             Technicky najrozšírenejšou "verziou" Linuxu je <strong>Android</strong>. Používa linuxové jadro na komunikáciu s hardvérom telefónu, hoci grafické rozhranie a aplikácie sú úplne iné ako na počítači.
           </p>
+          <img src="obrazky/8.png" alt="Android" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1364,6 +1346,7 @@ function renderujObsah() {
             <li><strong>Filmový priemysel:</strong> Takmer všetky špeciálne efekty v Hollywoode (od Avatara po Avengers) sa renderujú na Linuxových farmách.</li>
             <li><strong>Vaša obývačka:</strong> Smart TV, routery a inteligentné chladničky bežia na orezanom Linuxe.</li>
           </ul>
+          <img src="obrazky/9.png" alt="helikoptéra Ingenuity" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1382,9 +1365,7 @@ function renderujObsah() {
     `;
   }
 
-  /*=============================
-    MAC OS
-    =============================*/
+  /*MAC OS*/
   else if (aktivnaSekcia === 'macos_historia') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -1402,6 +1383,7 @@ function renderujObsah() {
           <p>
             Hoci bol systém vizuálne krásny, mal obrovský technický nedostatok: chýbal mu <strong>chránený multitasking</strong>. Ak zamrzla jedna aplikácia, museli ste reštartovať celý počítač. V 90. rokoch tento zastaraný základ prestal stíhať konkurenčnému Windows 95.
           </p>
+          <img src="obrazky/10.png" alt="Macintosh z roku 1984" class="obrazok-v-texte">
 
           <h3>2. Hľadanie záchrany a návrat Jobsa</h3>
           <p>
@@ -1510,6 +1492,7 @@ function renderujObsah() {
           <p>
             Zmena na <strong>macOS 11 (Big Sur)</strong> prišla až v roku 2020, aby symbolizovala novú éru prechodu na vlastné procesory (M1). Odvtedy Apple čísluje verzie "normálne" každý rok (11, 12, 13, 14, 15...).
           </p>
+          <img src="obrazky/11.jpg" alt="dizajn MacOS Big Sur vs. MacOS Catalina" class="obrazok-v-texte">
 
           <h3>Systém aktualizácií: Zadarmo a navždy</h3>
           <p>
@@ -1542,6 +1525,7 @@ function renderujObsah() {
             <li><strong>Šifrovanie:</strong> Bezpečnosť je zabudovaná priamo do štruktúry súborového systému.</li>
             <li><strong>Snapshots:</strong> Systém si vie robiť "fotky" stavu disku, čo umožňuje super-rýchle zálohovanie cez Time Machine.</li>
           </ul>
+          <img src="obrazky/12.png" alt="Apple File System" class="obrazok-v-texte">
 
           <h3>2. Ekosystém a Kontinuita</h3>
           <p>
@@ -1586,9 +1570,7 @@ function renderujObsah() {
     `;
   }
 
-  /*=============================
-    ŠPECIÁLNE / NEZNÁME OS
-    =============================*/
+  /*ŠPECIÁLNE / NEZNÁME OS*/
   else if (aktivnaSekcia === 'specialne_reactos') {
     obsahDiv.innerHTML = `
       <section class="sekcia-obsahu aktivny">
@@ -1649,6 +1631,7 @@ function renderujObsah() {
             <li><strong>Čo funguje:</strong> Inštalácia mnohých starších hier, prehliadačov a kancelárskych balíkov.</li>
             <li><strong>Čo je problém:</strong> Podpora moderných webových prehliadačov (kvôli zložitosti JS enginov) a najnovších ovládačov pre grafické karty.</li>
           </ul>
+          <img src="obrazky/13.svg" alt="Logo ReactOS" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1707,6 +1690,7 @@ function renderujObsah() {
           <p>
             Haiku je dnes v štádiu beta verzie. Je prekvapivo stabilný a má funkčný webový prehliadač (WebPositive). Je ideálny pre nadšencov, programátorov alebo ľudí, ktorí chcú oživiť starý notebook a zažiť "alternatívnu históriu" počítačov.
           </p>
+          <img src="obrazky/14.jpg" alt="Logo HAIKU" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1771,6 +1755,7 @@ function renderujObsah() {
           <p>
             Terry zomrel v roku 2018, ale TempleOS ostal zachovaný. Programátori ho dnes študujú ako príklad "Outsider Art" (umenia mimo prúdu). Je dôkazom toho, čo dokáže jeden brilantný mozog, aj keď je sužovaný chorobou.
           </p>
+          <img src="obrazky/15.png" alt="Logo TempleOS" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1817,11 +1802,9 @@ function renderujObsah() {
             </div>
           </section>
         `;
-        // SPUSTENIE ČASOVAČA (20 minút)
         spustitCasovac(20);
 
       } else {
-        // ... tu ostáva kód pre zamknutú časť (heslo) ...
         obsahDiv.innerHTML = `
           <section class="sekcia-obsahu aktivny">
             <div class="karta">
