@@ -64,6 +64,14 @@ const moduly = [
       { id: 'finalny_test', label: 'Finálny Test' },
     ],
   },
+  {
+    id: 'modul7',
+    title: '7. Zdroje informácií',
+    items: [
+      { id: 'zdroje_info', label: 'Použitá literatúra' },
+      { id: 'zdroje_fotky', label: 'Použité fotografie' },
+    ],
+  },
 ];
 
 const databazaTestov = {
@@ -723,13 +731,10 @@ function renderujBocnyPanel() {
       tlacidloPolozky.onclick = () => zobrazObsah(polozka.id);
       podmenu.appendChild(tlacidloPolozky);
     });
-
     modulDiv.appendChild(tlacidloModulu);
-    
     if (modul.id !== 'modul0' && modul.id !== 'modul6') {
       modulDiv.appendChild(podmenu);
     }
-    
     panel.appendChild(modulDiv);
   });
 }
@@ -1773,7 +1778,8 @@ function renderujObsah() {
       </section>
     `;
   }
-  /* Sekcia Finálny Test */
+
+  /* Finálny Test */
   else if (aktivnaSekcia === 'finalny_test') {
       if (hesloOdblokované) {
         obsahDiv.innerHTML = `
@@ -1822,6 +1828,69 @@ function renderujObsah() {
         `;
       }
     }
+    /* Zdroje informácií */
+  else if (aktivnaSekcia === 'zdroje_info') {
+  obsahDiv.innerHTML = `
+    <section class="sekcia-obsahu aktivny">
+      <div class="karta">
+        <h2>Použitá literatúra a encyklopedické zdroje</h2>
+        <p>Pri tvorbe teoretického obsahu o operačných systémoch a programovaní webovej aplikácie boli využité predovšetkým tieto encyklopedické zdroje a články:</p>
+        
+        <ul style="line-height: 1.8; margin-left: 20px; word-break: break-word;">
+          <li><strong>[1] WIKIPEDIA (SK).</strong> <em>Operačný systém</em>. Základná teória, definícia a rozdelenie operačných systémov. <br><a href="https://sk.wikipedia.org/wiki/Opera%C4%8Dn%C3%BD_syst%C3%A9m" target="_blank">https://sk.wikipedia.org/wiki/Operačný_systém</a></li>
+          
+          <li><strong>[2] WIKIPEDIA (SK).</strong> <em>Microsoft Windows</em>. História systému Windows, od verzie 1.0 až po súčasnosť, vývoj architektúry NT. <br><a href="https://sk.wikipedia.org/wiki/Microsoft_Windows" target="_blank">https://sk.wikipedia.org/wiki/Microsoft_Windows</a></li>
+          
+          <li><strong>[3] WIKIPEDIA (SK).</strong> <em>Linux</em>. Vznik projektu, open-source filozofia (GNU GPL) a rozdelenie linuxových distribúcií. <br><a href="https://sk.wikipedia.org/wiki/Linux" target="_blank">https://sk.wikipedia.org/wiki/Linux</a></li>
+          
+          <li><strong>[4] WIKIPEDIA (SK).</strong> <em>macOS</em>. Vývoj operačného systému od spoločnosti Apple, prechod z klasického Mac OS na unixový základ. <br><a href="https://sk.wikipedia.org/wiki/MacOS" target="_blank">https://sk.wikipedia.org/wiki/MacOS</a></li>
+          
+          <li><strong>[5] WIKIPEDIA (CZ).</strong> <em>ReactOS</em>. Informácie o open-source operačnom systéme, ktorého cieľom je binárna kompatibilita s Windows. <br><a href="https://cs.wikipedia.org/wiki/ReactOS" target="_blank">https://cs.wikipedia.org/wiki/ReactOS</a></li>
+          
+          <li><strong>[6] WIKIPEDIA (CZ).</strong> <em>Haiku (operační systém)</em>. História systému Haiku, ktorý vznikol ako open-source náhrada za zaniknutý BeOS. <br><a href="https://cs.wikipedia.org/wiki/Haiku_(opera%C4%8Dn%C3%AD_syst%C3%A9m)" target="_blank">https://cs.wikipedia.org/wiki/Haiku_(operační_systém)</a></li>
+          
+          <li><strong>[7] WIKIPEDIA (CZ).</strong> <em>TempleOS</em>. Technické špecifikácie a história unikátneho systému, ktorý vyvinul programátor Terry A. Davis. <br><a href="https://cs.wikipedia.org/wiki/TempleOS" target="_blank">https://cs.wikipedia.org/wiki/TempleOS</a></li>
+          
+          <li><strong>[8] WIKIPEDIA (SK).</strong> <em>HTML (Hypertext Markup Language)</em>. Vývoj a štandardy značkovacieho jazyka pre tvorbu webových stránok. <br><a href="https://sk.wikipedia.org/wiki/HTML" target="_blank">https://sk.wikipedia.org/wiki/HTML</a></li>
+          
+          <li><strong>[9] WIKIPEDIA (SK).</strong> <em>Kaskádové štýly (CSS)</em>. Formátovanie a vizuálna prezentácia webových dokumentov. <br><a href="https://sk.wikipedia.org/wiki/Kask%C3%A1dov%C3%A9_%C5%A1t%C3%BDly" target="_blank">https://sk.wikipedia.org/wiki/Kaskádové_štýly</a></li>
+          
+          <li><strong>[10] WIKIPEDIA (SK).</strong> <em>JavaScript</em>. Skriptovací jazyk používaný pre interaktivitu a logiku webových aplikácií (SPA). <br><a href="https://sk.wikipedia.org/wiki/JavaScript" target="_blank">https://sk.wikipedia.org/wiki/JavaScript</a></li>
+
+          <li><strong>[11] HAIKU OS.</strong> <em>Haiku Project (About)</em>. Encyklopedický prehľad o histórii BeOS a architektúre systému Haiku. <br><a href="https://www.haiku-os.org/about/" target="_blank">https://www.haiku-os.org/about/</a></li>
+        </ul>
+      </div>
+    </section>
+  `;
+}
+
+  else if (aktivnaSekcia === 'zdroje_fotky') {
+  obsahDiv.innerHTML = `
+    <section class="sekcia-obsahu aktivny">
+      <div class="karta">
+        <h2>Použité fotografie a obrázky</h2>
+        <p>Zoznam odkazov na grafické materiály a logá použité v jednotlivých kapitolách tejto webovej stránky:</p>
+        
+        <ul style="line-height: 1.8; margin-left: 20px;">
+          <li><strong>Obrázok k definícii OS (Kernel):</strong> <a href="https://cyberhoot.com/sk/cybrary/kernel/" target="_blank">cyberhoot.com</a></li>
+          <li><strong>Obrázok histórie (Pohľad do roku 1968):</strong> <a href="https://touchit.sk/ako-jeden-chlap-v-roku-1968-predviedol-vsetko-co-budu-pocitace-robit-po-nasledujucich-40-rokov-a-nikoho-to-nezaujimalo/465073/" target="_blank">touchit.sk</a></li>
+          <li><strong>Rozdelenie OS:</strong> <a href="https://computerguidehub.com/types-of-operating-systems/" target="_blank">computerguidehub.com</a></li>
+          <li><strong>Windows (Evolúcia Menu Štart):</strong> <a href="https://www.trustedreviews.com/opinion/windows-95-to-windows-10-how-the-start-menu-has-evolved-2928628" target="_blank">trustedreviews.com</a></li>
+          <li><strong>Windows (Modrá smrť - BSOD):</strong> <a href="https://touchit.sk/co-robit-ak-windows-10-nejde-spustit-z-dovodu-bsod-s-napisom-critical-process-died/646635/" target="_blank">touchit.sk</a></li>
+          <li><strong>Linux (Logo GNU/Linux):</strong> <a href="https://libre2.news.blog/que-es-gnu-linux/" target="_blank">libre2.news.blog</a></li>
+          <li><strong>Linux (Android a Linux):</strong> <a href="https://www.mojandroid.sk/android-a-linux-si-opat-rozumeju/" target="_blank">mojandroid.sk</a></li>
+          <li><strong>Linux (Helikoptéra Ingenuity na Marse):</strong> <a href="https://cs.wikipedia.org/wiki/Ingenuity" target="_blank">wikipedia.org</a></li>
+          <li><strong>macOS (Apple Macintosh z roku 1984):</strong> <a href="https://sk.wikipedia.org/wiki/Apple_Macintosh" target="_blank">wikipedia.org</a></li>
+          <li><strong>macOS (Dizajn Big Sur vs. Catalina):</strong> <a href="https://svetapple.sk/zariadenia/mac/macos-big-sur-vs-macos-catalina-pozrite-sa-ako-apple-zmenilo-dizajn/" target="_blank">svetapple.sk</a></li>
+          <li><strong>macOS (Súborový systém APFS):</strong> <a href="https://blog.fosketts.net/2016/06/13/macos-sierra-includes-new-apple-file-system-apfs/" target="_blank">blog.fosketts.net</a></li>
+          <li><strong>Špeciálne OS (Logo ReactOS):</strong> <a href="https://en.wikipedia.org/wiki/ReactOS" target="_blank">wikipedia.org</a></li>
+          <li><strong>Špeciálne OS (BeOS / Haiku OS):</strong> <a href="https://appleinsider.com/articles/23/01/12/beos-lives-on-in-the-new-haiku-os-beta-4" target="_blank">appleinsider.com</a></li>
+          <li><strong>Špeciálne OS (Terry Davis / TempleOS):</strong> <a href="https://github.com/topics/terry-davis?l=html&o=asc&s=updated" target="_blank">github.com</a></li>
+        </ul>
+      </div>
+    </section>
+  `;
+}
 } 
 
 /* Inicializácia pri načítaní stránky */
