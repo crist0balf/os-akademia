@@ -526,11 +526,18 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
 
 /* --- SUPABASE: Prihlásenie a Registrácia --- */
 async function spracujAuth(jeRegistracia) {
-  const email = document.getElementById('vstup-email').value;
+  const email = document.getElementById('vstup-email').value.trim();
   const heslo = document.getElementById('vstup-heslo').value;
   const chybaDiv = document.getElementById('chyba-hesla');
   
   chybaDiv.style.display = 'none';
+
+  // Obmedzenie iba na doménu @spspp.sk
+  if (!email.endsWith('@spspp.sk')) {
+    chybaDiv.textContent = 'Registrácia a prihlásenie je povolené iba pre školské emaily (@spspp.sk).';
+    chybaDiv.style.display = 'block';
+    return;
+  }
 
   if (!email || heslo.length < 6) {
     chybaDiv.textContent = 'Zadajte platný email a heslo (min. 6 znakov).';
@@ -541,10 +548,8 @@ async function spracujAuth(jeRegistracia) {
   try {
     let data, error;
     if (jeRegistracia) {
-      // ZMĚNA: supabaseClient
       ({ data, error } = await supabaseClient.auth.signUp({ email: email, password: heslo }));
     } else {
-      // ZMĚNA: supabaseClient
       ({ data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: heslo }));
     }
 
@@ -554,15 +559,29 @@ async function spracujAuth(jeRegistracia) {
     renderujObsah(); 
 
   } catch (error) {
-    chybaDiv.textContent = 'Chyba: ' + (error.message.includes('Invalid login') ? 'Nesprávny email nebo heslo.' : error.message);
+    chybaDiv.textContent = 'Chyba: ' + (error.message.includes('Invalid login') ? 'Nesprávny email alebo heslo.' : error.message);
+    chybaDiv.style.display = 'block';
+  }
+}
+
+/* Nová funkcia na overenie hesla k testu */
+function overHesloTestu() {
+  const zadaneHeslo = document.getElementById('vstup-heslo-test').value;
+  const chybaDiv = document.getElementById('chyba-heslo-test');
+  
+  if (zadaneHeslo === 'SPSTAD123') {
+    hesloOdblokovane = true;
+    renderujObsah(); // Znovu vyrenderuje stránku a odomkne samotný test
+  } else {
+    chybaDiv.textContent = 'Nesprávne prístupové heslo k testu.';
     chybaDiv.style.display = 'block';
   }
 }
 
 async function odhlasitZiaka() {
-  // ZMĚNA: supabaseClient
   await supabaseClient.auth.signOut();
   aktivnyUzivatel = null;
+  hesloOdblokovane = false; // Po odhlásení znovu zamkneme test
   clearInterval(casovacInterval);
   renderujObsah();
 }
@@ -657,9 +676,9 @@ let tmavyRezim = false;
 let aktivnaSekcia = 'informacie';
 let rozbaleneModuly = { modul0: false };
 let casovacInterval;
+let hesloOdblokovane = false;
 const supabaseUrl = 'https://klzqmllullbqygoisklu.supabase.co';
 const supabaseKey = 'sb_publishable_pvPft9-gT0p9SkrADx21kg_2dluwYEN';
-
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 let aktivnyUzivatel = null;
 
@@ -1800,9 +1819,54 @@ function renderujObsah() {
     `;
   }
 
-  /* Finálny Test so Supabase */
+  /* Finálny Test so Supabase a Heslom */
   else if (aktivnaSekcia === 'finalny_test') {
-    if (aktivnyUzivatel) {
+    if (!aktivnyUzivatel) {
+      // STAV 1: Žiak nie je prihlásený
+      obsahDiv.innerHTML = `
+        <section class="sekcia-obsahu aktivny">
+          <div class="karta">
+            <h2>Finálny Test - Prihlásenie</h2>
+            <p>Pre prístup k finálnemu testu sa musíte prihlásiť školským emailom (<strong>@spspp.sk</strong>).</p>
+            
+            <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <input type="email" id="vstup-email" placeholder="Školský email (napr. richardbaran@spspp.sk)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              <input type="password" id="vstup-heslo" placeholder="Heslo od gmailu (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              
+              <div style="display: flex; gap: 10px;">
+                <button onclick="spracujAuth(false)" style="flex: 1; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Prihlásiť sa</button>
+                <button onclick="spracujAuth(true)" style="flex: 1; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Nová registrácia</button>
+              </div>
+              <div id="chyba-hesla" style="color: var(--error-color); margin-top: 15px; font-weight: bold; display: none;"></div>
+            </div>
+          </div>
+        </section>
+      `;
+    } else if (!hesloOdblokovane) {
+      // STAV 2: Žiak je prihlásený, ale musí zadať heslo k testu
+      obsahDiv.innerHTML = `
+        <section class="sekcia-obsahu aktivny">
+          <div class="karta">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+              <h2 style="border: none; margin: 0; padding: 0;">Finálny Test - Overenie prístupu</h2>
+              <div>
+                <span style="font-size: 0.9rem; margin-right: 15px;">Prihlásený: <strong>${aktivnyUzivatel.email}</strong></span>
+                <button onclick="odhlasitZiaka()" style="padding: 5px 10px; background: var(--error-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Odhlásiť sa</button>
+              </div>
+            </div>
+            
+            <p>Zadajte prístupové heslo k testu. Toto heslo vám poskytne učiteľ.</p>
+            
+            <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <input type="password" id="vstup-heslo-test" placeholder="Zadajte heslo k testu" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              <button onclick="overHesloTestu()" style="width: 100%; padding: 10px; background: var(--success-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🔓 Odomknúť test</button>
+              <div id="chyba-heslo-test" style="color: var(--error-color); margin-top: 15px; font-weight: bold; display: none;"></div>
+            </div>
+          </div>
+        </section>
+      `;
+    } else {
+      // STAV 3: Test je odomknutý, beží časomiera
       obsahDiv.innerHTML = `
         <section class="sekcia-obsahu aktivny">
           <div class="karta">
@@ -1835,27 +1899,6 @@ function renderujObsah() {
         </section>
       `;
       spustitCasovac(20);
-
-    } else {
-      obsahDiv.innerHTML = `
-        <section class="sekcia-obsahu aktivny">
-          <div class="karta">
-            <h2>Finálny Test - Prihlásenie</h2>
-            <p>Pre prístup k finálnemu testu sa musíte prihlásiť alebo zaregistrovať. Vaše výsledky budú bezpečne uložené.</p>
-            
-            <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-              <input type="email" id="vstup-email" placeholder="Školský email (napr. janko@spstad.sk)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--border-color);" />
-              <input type="password" id="vstup-heslo" placeholder="Heslo (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
-              
-              <div style="display: flex; gap: 10px;">
-                <button onclick="spracujAuth(false)" style="flex: 1; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Prihlásiť sa</button>
-                <button onclick="spracujAuth(true)" style="flex: 1; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Nová registrácia</button>
-              </div>
-              <div id="chyba-hesla" style="color: var(--error-color); margin-top: 15px; font-weight: bold; display: none;"></div>
-            </div>
-          </div>
-        </section>
-      `;
     }
   }
     /* Zdroje informácií */
