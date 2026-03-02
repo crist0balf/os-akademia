@@ -612,6 +612,29 @@ async function vyhodnotFinalnyTest() {
     const znamka = data.znamka;
     const pocetSpravnych = data.pocet_spravnych;
     const pocetOtazok = odpovedeZiaka.length;
+    const detaily = data.detaily;
+
+    otazkyDOM.forEach((box, index) => {
+      const detail = detaily[index];
+      const wrapper = box.querySelector('.moznosti-wrapper');
+      const tlacidla = wrapper.querySelectorAll('.tlacidlo-test');
+      const vysledokDiv = box.querySelector('.vysledok-text');
+
+      if (tlacidla[detail.spravna_odpoved]) {
+         tlacidla[detail.spravna_odpoved].classList.add('spravne');
+      }
+
+      if (detail.ziakova_odpoved !== -1) {
+        if (detail.ziakova_odpoved === detail.spravna_odpoved) {
+          vysledokDiv.innerHTML = '<span style="color: var(--success-color)">✅ Správne</span>';
+        } else {
+          tlacidla[detail.ziakova_odpoved].classList.add('nespravne');
+          vysledokDiv.innerHTML = '<span style="color: var(--error-color)">❌ Nesprávne</span>';
+        }
+      } else {
+        vysledokDiv.innerHTML = '<span style="color: orange">⚠️ Neodpovedané</span>';
+      }
+    });
 
     let farba = "var(--error-color)";
     if (znamka === 1) farba = "var(--success-color)";
@@ -626,12 +649,12 @@ async function vyhodnotFinalnyTest() {
         <div style="width: 100%; background: #ddd; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;">
           <div style="width: ${percenta}%; background: ${farba}; height: 100%;"></div>
         </div>
-        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--success-color);">✅ Výsledok byl bezpečně uložen do databáze.</p>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--success-color);">✅ Výsledok bol bezpečne uložený do databázy.</p>
       </div>
     `;
     
   } catch (error) {
-    kontajnerVysledku.innerHTML = `<p style="color: red; text-align: center;">Nastala chyba při komunikaci se serverem: ${error.message}</p>`;
+    kontajnerVysledku.innerHTML = `<p style="color: red; text-align: center;">Nastala chyba pri komunikácii so serverom: ${error.message}</p>`;
   }
 }
 
@@ -1851,7 +1874,6 @@ function renderujObsah() {
         </section>
       `;
     } else {
-      // STAV 3: Test je odomknutý, beží časomiera
       obsahDiv.innerHTML = `
         <section class="sekcia-obsahu aktivny">
           <div class="karta">
