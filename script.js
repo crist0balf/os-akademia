@@ -524,72 +524,107 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
   }
 }
 
-/* Funkcia na vyhodnotenie finálneho testu */
-function vyhodnotFinalnyTest() {
-  clearInterval(casovacInterval);
-  const otazky = databazaTestov['finalny_test'];
-  let pocetSpravnych = 0;
+/* --- SUPABASE: Prihlásenie a Registrácia --- */
+async function spracujAuth(jeRegistracia) {
+  const email = document.getElementById('vstup-email').value;
+  const heslo = document.getElementById('vstup-heslo').value;
+  const chybaDiv = document.getElementById('chyba-hesla');
   
-  /* Nájde kontajner s otázkami */
+  chybaDiv.style.display = 'none';
+
+  if (!email || heslo.length < 6) {
+    chybaDiv.textContent = 'Zadajte platný email a heslo (min. 6 znakov).';
+    chybaDiv.style.display = 'block';
+    return;
+  }
+
+  try {
+    let data, error;
+    if (jeRegistracia) {
+      ({ data, error } = await supabase.auth.signUp({ email: email, password: heslo }));
+    } else {
+      ({ data, error } = await supabase.auth.signInWithPassword({ email: email, password: heslo }));
+    }
+
+    if (error) throw error;
+
+    aktivnyUzivatel = data.user;
+    renderujObsah(); // Znovu vyrenderuje stránku, tentokrát odomkne test
+
+  } catch (error) {
+    chybaDiv.textContent = 'Chyba: ' + (error.message.includes('Invalid login') ? 'Nesprávny email alebo heslo.' : error.message);
+    chybaDiv.style.display = 'block';
+  }
+}
+
+async function odhlasitZiaka() {
+  await supabase.auth.signOut();
+  aktivnyUzivatel = null;
+  clearInterval(casovacInterval);
+  renderujObsah();
+}
+
+/* --- SUPABASE: Bezpečné vyhodnotenie testu (RPC) --- */
+async function vyhodnotFinalnyTest() {
+  clearInterval(casovacInterval);
+  
   const kontajner = document.querySelector('#test-finalny_test');
   if (!kontajner) return;
 
   const otazkyDOM = kontajner.querySelectorAll('.otazka-box');
+  let odpovedeZiaka = [];
 
-  otazky.forEach((otazkaData, index) => {
-    const box = otazkyDOM[index];
+  // Zozbierame len indexy toho, čo žiak klikol. Ziadne spravne odpovede tu nie su!
+  otazkyDOM.forEach((box) => {
     const wrapper = box.querySelector('.moznosti-wrapper');
-    const tlacidla = wrapper.querySelectorAll('.tlacidlo-test');
-    const vysledokDiv = document.getElementById(`vysledok-finalny_test-${index}`);
-    
-    /* Zisti, čo užívateľ vybral */
     const vybranaIndex = wrapper.getAttribute('data-vybrana-odpoved');
-
-    /* Zablokuj tlačidlá */
-    tlacidla.forEach(btn => btn.disabled = true);
-
-    if (vybranaIndex !== null) {
-      const tip = parseInt(vybranaIndex);
-      if (tip === otazkaData.spravna) {
-        pocetSpravnych++;
-        tlacidla[tip].classList.add('spravne'); 
-        vysledokDiv.innerHTML = '<span style="color: var(--success-color)">✅ Správne</span>';
-      } else {
-        tlacidla[tip].classList.add('nespravne'); 
-        tlacidla[otazkaData.spravna].classList.add('spravne'); 
-        vysledokDiv.innerHTML = '<span style="color: var(--error-color)">❌ Chyba</span>';
-      }
-    } else {
-      /* Ak neodpovedal */
-      tlacidla[otazkaData.spravna].classList.add('spravne');
-      vysledokDiv.innerHTML = '<span style="color: orange">⚠️ Neodpovedané</span>';
-    }
+    const tlacidla = wrapper.querySelectorAll('.tlacidlo-test');
+    
+    tlacidla.forEach(btn => btn.disabled = true); // Zablokujeme klikanie
+    
+    // Ak neodpovedal, posielame -1, inak cislo odpovede
+    odpovedeZiaka.push(vybranaIndex !== null ? parseInt(vybranaIndex) : -1);
   });
 
-  /* Výpočet známky */
-  const pocetOtazok = otazky.length;
-  const percenta = Math.round((pocetSpravnych / pocetOtazok) * 100);
-  let znamka = 5;
-  let farba = "var(--error-color)";
-  
-  if (percenta >= 90) { znamka = 1; farba = "var(--success-color)"; }
-  else if (percenta >= 75) { znamka = 2; farba = "#17a2b8"; } 
-  else if (percenta >= 50) { znamka = 3; farba = "#ffc107"; } 
-  else if (percenta >= 30) { znamka = 4; farba = "#fd7e14"; } 
-
-  /* Zobrazenie výsledku */
   const kontajnerVysledku = document.getElementById('celkove-hodnotenie');
-  kontajnerVysledku.innerHTML = `
-    <div class="vysledok-box" style="border-color: ${farba}">
-      <h3 style="color: ${farba}; font-size: 2.5rem; margin-bottom: 0.5rem;">Známka: ${znamka}</h3>
-      <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Získal si <strong>${pocetSpravnych}</strong> z ${pocetOtazok} bodov (${percenta}%).</p>
-      <div style="width: 100%; background: #ddd; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;">
-        <div style="width: ${percenta}%; background: ${farba}; height: 100%;"></div>
-      </div>
-    </div>
-  `;
-  
+  kontajnerVysledku.innerHTML = '<h3 style="text-align: center; color: var(--accent-color);">Spracovávam výsledky na serveri... ⏳</h3>';
   kontajnerVysledku.scrollIntoView({ behavior: 'smooth' });
+
+  try {
+    // Tu sa deje mágia. Pošleme pole odpovedí do našej SQL funkcie v Supabase
+    const { data, error } = await supabase.rpc('vyhodnot_test', {
+      ziacke_odpovede: odpovedeZiaka
+    });
+
+    if (error) throw error;
+
+    // Supabase nám vrátilo hotový výsledok!
+    const percenta = data.percenta;
+    const znamka = data.znamka;
+    const pocetSpravnych = data.pocet_spravnych;
+    const pocetOtazok = odpovedeZiaka.length;
+
+    let farba = "var(--error-color)";
+    if (znamka === 1) farba = "var(--success-color)";
+    else if (znamka === 2) farba = "#17a2b8";
+    else if (znamka === 3) farba = "#ffc107";
+    else if (znamka === 4) farba = "#fd7e14";
+
+    // Vykreslenie výsledku
+    kontajnerVysledku.innerHTML = `
+      <div class="vysledok-box" style="border-color: ${farba}">
+        <h3 style="color: ${farba}; font-size: 2.5rem; margin-bottom: 0.5rem;">Známka: ${znamka}</h3>
+        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Získal si <strong>${pocetSpravnych}</strong> z ${pocetOtazok} bodov (${percenta}%).</p>
+        <div style="width: 100%; background: #ddd; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;">
+          <div style="width: ${percenta}%; background: ${farba}; height: 100%;"></div>
+        </div>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--success-color);">✅ Výsledok bol bezpečne uložený do databázy.</p>
+      </div>
+    `;
+    
+  } catch (error) {
+    kontajnerVysledku.innerHTML = `<p style="color: red; text-align: center;">Nastala chyba pri komunikácii so serverom: ${error.message}</p>`;
+  }
 }
 
 /* Funkcia na odpočítavanie času */
@@ -623,8 +658,11 @@ function spustitCasovac(minuty) {
 let tmavyRezim = false;
 let aktivnaSekcia = 'informacie';
 let rozbaleneModuly = { modul0: false };
-let hesloOdblokované = false;
 let casovacInterval;
+const supabaseUrl = 'sb_publishable_pvPft9-gT0p9SkrADx21kg_2dluwYEN';
+const supabaseKey = 'sb_secret_dWfGh5oLpLN6gwmE9pwfBw_Ui6CaAp4';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+let aktivnyUzivatel = null;
 
 /* Načítaj voľbu tmavého režimu */
 function nacitajRezim() {
@@ -671,22 +709,6 @@ function zobrazObsah(idSekcie) {
     prvokObsahu.scrollTop = 0;
   }
   renderujBocnyPanel();
-}
-
-/* Overenie hesla */
-function overHeslo() {
-  const vstup = document.getElementById('vstup-hesla').value;
-  const chybaDiv = document.getElementById('chyba-hesla');
-  
-  if (vstup === 'SPSTAD123') {
-    hesloOdblokované = true;
-    chybaDiv.classList.remove('zobrazit');
-    renderujObsah();
-  } else {
-    chybaDiv.classList.add('zobrazit');
-    chybaDiv.textContent = 'Nesprávne heslo. Skúste znova.';
-    document.getElementById('vstup-hesla').value = '';
-  }
 }
 
 /* Renderovanie bočného panelu */
@@ -1779,55 +1801,64 @@ function renderujObsah() {
     `;
   }
 
-  /* Finálny Test */
+  /* Finálny Test so Supabase */
   else if (aktivnaSekcia === 'finalny_test') {
-      if (hesloOdblokované) {
-        obsahDiv.innerHTML = `
-          <section class="sekcia-obsahu aktivny">
-            <div class="karta">
-              <h2>Záverečný Test Akadémie</h2>
-              
-              <div id="casovac-kontajner">
-                ⏱️ Zostávajúci čas: <span id="casovac-displej">20:00</span>
+    if (aktivnyUzivatel) {
+      obsahDiv.innerHTML = `
+        <section class="sekcia-obsahu aktivny">
+          <div class="karta">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+              <h2 style="border: none; margin: 0; padding: 0;">Záverečný Test Akadémie</h2>
+              <div>
+                <span style="font-size: 0.9rem; margin-right: 15px;">Prihlásený: <strong>${aktivnyUzivatel.email}</strong></span>
+                <button onclick="odhlasitZiaka()" style="padding: 5px 10px; background: var(--error-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Odhlásiť sa</button>
               </div>
-
-              <p>Gratulujeme k odomknutiu finálneho testu! Máte <strong>20 minút</strong> na vypracovanie.</p>
-              
-              <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
-
-              ${vygenerujHTMLTestu('finalny_test')}
-
-              <div style="text-align: center; margin-top: 2rem;">
-                <button onclick="vyhodnotFinalnyTest()" class="tlacidlo-vyhodnotit">
-                  📊 Vyhodnotiť test
-                </button>
-              </div>
-
-              <div id="celkove-hodnotenie"></div>
-
             </div>
-          </section>
-        `;
-        spustitCasovac(20);
-
-      } else {
-        obsahDiv.innerHTML = `
-          <section class="sekcia-obsahu aktivny">
-            <div class="karta">
-              <h2>Finálny Test</h2>
-              <p>Finálny test je chránený heslom. Prosím, zadajte heslo na prístup.</p>
-              
-              <div style="margin-top: 20px;">
-                <input type="password" id="vstup-hesla" placeholder="Zadajte heslo..." style="padding: 10px; font-size: 1rem;" />
-                <button onclick="overHeslo()" style="padding: 10px 20px; font-size: 1rem; cursor: pointer; margin-left: 10px;">Odomknúť Test</button>
-              </div>
-              
-              <div id="chyba-hesla" style="color: red; margin-top: 10px; display: none;"></div>
+            
+            <div id="casovac-kontajner">
+              ⏱️ Zostávajúci čas: <span id="casovac-displej">20:00</span>
             </div>
-          </section>
-        `;
-      }
+
+            <p>Máte <strong>20 minút</strong> na vypracovanie testu. Po uplynutí času sa test automaticky vyhodnotí.</p>
+            
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+            ${vygenerujHTMLTestu('finalny_test')}
+
+            <div style="text-align: center; margin-top: 2rem;">
+              <button onclick="vyhodnotFinalnyTest()" class="tlacidlo-vyhodnotit">
+                📊 Vyhodnotiť test
+              </button>
+            </div>
+
+            <div id="celkove-hodnotenie"></div>
+          </div>
+        </section>
+      `;
+      spustitCasovac(20);
+
+    } else {
+      obsahDiv.innerHTML = `
+        <section class="sekcia-obsahu aktivny">
+          <div class="karta">
+            <h2>Finálny Test - Prihlásenie</h2>
+            <p>Pre prístup k finálnemu testu sa musíte prihlásiť alebo zaregistrovať. Vaše výsledky budú bezpečne uložené.</p>
+            
+            <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+              <input type="email" id="vstup-email" placeholder="Školský email (napr. janko@spstad.sk)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              <input type="password" id="vstup-heslo" placeholder="Heslo (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              
+              <div style="display: flex; gap: 10px;">
+                <button onclick="spracujAuth(false)" style="flex: 1; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Prihlásiť sa</button>
+                <button onclick="spracujAuth(true)" style="flex: 1; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Nová registrácia</button>
+              </div>
+              <div id="chyba-hesla" style="color: var(--error-color); margin-top: 15px; font-weight: bold; display: none;"></div>
+            </div>
+          </div>
+        </section>
+      `;
     }
+  }
     /* Zdroje informácií */
   else if (aktivnaSekcia === 'zdroje_info') {
   obsahDiv.innerHTML = `
