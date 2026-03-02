@@ -1860,6 +1860,7 @@ function renderujObsah() {
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
               <h2 style="border: none; margin: 0; padding: 0;">Finálny Test - Overenie prístupu</h2>
               <div>
+              ${aktivnyUzivatel.email === 'stanislavcopik@spspp.sk' ? `<button onclick="zobrazObsah('admin_panel')" style="padding: 5px 10px; background: var(--success-color); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">👑 Výsledky žiakov</button>` : ''}
                 <span style="font-size: 0.9rem; margin-right: 15px;">Prihlásený: <strong>${aktivnyUzivatel.email}</strong></span>
                 <button onclick="odhlasitZiaka()" style="padding: 5px 10px; background: var(--error-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Odhlásiť sa</button>
               </div>
@@ -1908,7 +1909,26 @@ function renderujObsah() {
       spustitCasovac(20);
     }
   }
-    /* Zdroje informácií */
+
+  /* ADMIN PANEL (Len pre učiteľa) */
+  else if (aktivnaSekcia === 'admin_panel' && aktivnyUzivatel && aktivnyUzivatel.email === 'stanislavcopik@spspp.sk') {
+    obsahDiv.innerHTML = `
+      <section class="sekcia-obsahu aktivny">
+        <div class="karta">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            <h2 style="border: none; margin: 0; padding: 0;">👑 Admin Panel - Výsledky žiakov</h2>
+            <button onclick="zobrazObsah('finalny_test')" style="padding: 5px 10px; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Späť na test</button>
+          </div>
+          <div id="admin-tabulka-kontajner">
+            <h4 style="text-align: center; color: var(--accent-color);">Načítavam dáta zo servera... ⏳</h4>
+          </div>
+        </div>
+      </section>
+    `;
+    nacitajVysledkyPreAdmina();
+  }
+
+  /* Zdroje informácií */
   else if (aktivnaSekcia === 'zdroje_info') {
   obsahDiv.innerHTML = `
     <section class="sekcia-obsahu aktivny">
@@ -1979,3 +1999,55 @@ window.addEventListener('DOMContentLoaded', () => {
   renderujBocnyPanel();
   renderujObsah();
 });
+
+/* SUPABASE: Načítanie výsledkov pre Admina */
+async function nacitajVysledkyPreAdmina() {
+  const kontajner = document.getElementById('admin-tabulka-kontajner');
+  if (!kontajner) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('vysledky')
+      .select('*')
+      .order('vytvorene', { ascending: false });
+
+    if (error) throw error;
+
+    let riadky = data.map((vysledok, index) => {
+      let datum = new Date(vysledok.vytvorene).toLocaleString('sk-SK');
+      
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td><strong>${vysledok.ziak_email}</strong></td>
+          <td>${vysledok.pocet_bodov} / 20</td>
+          <td>${vysledok.percenta}%</td>
+          <td style="font-weight: bold; color: ${vysledok.znamka === 1 ? 'var(--success-color)' : (vysledok.znamka === 5 ? 'var(--error-color)' : 'inherit')}">${vysledok.znamka}</td>
+          <td style="font-size: 0.85rem;">${datum}</td>
+        </tr>
+      `;
+    }).join('');
+
+    kontajner.innerHTML = `
+      <div class="tabulka-wrapper">
+        <table class="tabulka-data">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Email žiaka</th>
+              <th>Body</th>
+              <th>Percentá</th>
+              <th>Známka</th>
+              <th>Dátum a čas</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${riadky.length > 0 ? riadky : '<tr><td colspan="6" style="text-align: center; padding: 20px;">Zatiaľ neboli zaznamenané žiadne výsledky.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } catch (err) {
+    kontajner.innerHTML = `<p style="color: red; text-align: center;">Chyba pri sťahovaní dát: ${err.message}</p>`;
+  }
+}
