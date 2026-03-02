@@ -368,101 +368,81 @@ const databazaTestov = {
     { 
       otazka: "K čomu sa v analógii prirovnáva operačný systém?", 
       moznosti: ["K huslistovi", "K dirigentovi", "K notám"], 
-      spravna: 1 
     },
     { 
       otazka: "Ktorá časť OS má neobmedzený prístup k hardvéru?", 
       moznosti: ["Jadro (Kernel)", "Prehliadač", "Prieskumník"], 
-      spravna: 0 
     },
     { 
       otazka: "Čo znamená multitasking?", 
       moznosti: ["Schopnosť robiť viac vecí naraz", "Rýchle kopírovanie súborov", "Pripojenie viacerých monitorov"], 
-      spravna: 0 
     },
     { otazka: "Kde sa používajú RTOS (Real-Time) systémy?", 
       moznosti: ["V kanceláriách", "V autách a kardiostimulátoroch", "V mobiloch"], 
-      spravna: 1 
     },
     { 
       otazka: "Ktorá verzia Windows priniesla tlačidlo Štart?", 
       moznosti: ["Windows 3.1", "Windows 95", "Windows XP"], 
-      spravna: 1 
     },
     { 
       otazka: "Aký súborový systém používa Windows (podpora ACL)?", 
       moznosti: ["FAT32", "NTFS", "EXT4"], 
-      spravna: 1 
     },
     { 
       otazka: "Čo je to 'Modrá smrť' (BSOD)?", 
       moznosti: ["Vírus", "Obranný reštart systému", "Chyba grafiky"], 
-      spravna: 1 
     },
     { 
       otazka: "Ktorý Windows spojil domáce (9x) a firemné (NT) systémy?", 
       moznosti: ["Windows 2000", "Windows ME", "Windows XP"], 
-      spravna: 2 
     },
     { 
       otazka: "Kto založil Linux?", 
       moznosti: ["Steve Jobs", "Bill Gates", "Linus Torvalds"], 
-      spravna: 2 
     },
     { 
       otazka: "Čo je to 'Distribúcia'?", 
       moznosti: ["Iba jadro", "Kompletný balík (Jadro + softvér)", "Platená verzia"], 
-      spravna: 1 
     },
     { 
       otazka: "Čo znamená 'Root'?", 
       moznosti: ["Superpoužívateľ (Admin)", "Koreň stromu", "Oboje"], 
-      spravna: 2 
     },
     { 
       otazka: "Odkiaľ sa bezpečne inštaluje softvér v Linuxe?", 
       moznosti: ["Z repozitárov", "Z ulož.to", "Z exe súborov"], 
-      spravna: 0 
     },
     { 
       otazka: "Na akom základe beží macOS?", 
       moznosti: ["MS-DOS", "Unix", "Linux"], 
-      spravna: 1 
     },
     { 
       otazka: "Čo je to 'Gatekeeper'?", 
       moznosti: ["Ochrana pred nepodpísanými aplikáciami", "Správca súborov", "Antivírus"], 
-      spravna: 0 
     },
     { 
       otazka: "Aký súborový systém používa Apple pre SSD?", 
       moznosti: ["NTFS", "APFS", "HFS+"], 
-      spravna: 1 
     },
     { 
       otazka: "Čo umožňuje funkcia 'Continuity'?", 
       moznosti: ["Prepojenie Mac a iPhone", "Dlhšiu výdrž batérie", "Lacnejšie aplikácie"], 
-      spravna: 0 
     },
     { 
       otazka: "Cieľ systému ReactOS?", 
       moznosti: ["Klonovať Windows", "Klonovať Linux", "Nový Android"], 
-      spravna: 0 
     },
     { 
       otazka: "V akom jazyku je napísaný TempleOS?", 
       moznosti: ["C++", "HolyC", "Java"], 
-      spravna: 1 
     },
     { 
       otazka: "Prečo TempleOS nemá sieť?", 
       moznosti: ["Pre bezpečnosť a čistotu", "Pre chybu v kóde", "Pre starý hardvér"], 
-      spravna: 0 
     },
     { 
       otazka: "Čím je známy systém Haiku?", 
       moznosti: ["Je to nástupca BeOS a je veľmi rýchly", "Je to vírus", "Je to systém pre servery"], 
-      spravna: 0 
     }
   ]
 };
@@ -501,7 +481,6 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
 
   /* LOGIKA PRE FINÁLNY TEST */
   if (idSekcie === 'finalny_test') {
-    /* Odznačí ostatné v tejto otázke */
     vsetkyTlacidla.forEach(btn => btn.removeAttribute('data-oznacene'));
     tlacidlo.setAttribute('data-oznacene', 'true');
     rodic.setAttribute('data-vybrana-odpoved', indexMoznosti);
@@ -524,7 +503,7 @@ function skontrolujOdpoved(idSekcie, indexOtazky, indexMoznosti, tlacidlo) {
   }
 }
 
-/* --- SUPABASE: Prihlásenie a Registrácia --- */
+/* SUPABASE: Prihlásenie a Registrácia */
 async function spracujAuth(jeRegistracia) {
   const email = document.getElementById('vstup-email').value.trim();
   const heslo = document.getElementById('vstup-heslo').value;
@@ -532,7 +511,6 @@ async function spracujAuth(jeRegistracia) {
   
   chybaDiv.style.display = 'none';
 
-  // Obmedzenie iba na doménu @spspp.sk
   if (!email.endsWith('@spspp.sk')) {
     chybaDiv.textContent = 'Registrácia a prihlásenie je povolené iba pre školské emaily (@spspp.sk).';
     chybaDiv.style.display = 'block';
@@ -564,29 +542,43 @@ async function spracujAuth(jeRegistracia) {
   }
 }
 
-/* Nová funkcia na overenie hesla k testu */
-function overHesloTestu() {
+/* SUPABASE: funkcia na overenie hesla k testu */
+async function overHesloTestu() {
   const zadaneHeslo = document.getElementById('vstup-heslo-test').value;
   const chybaDiv = document.getElementById('chyba-heslo-test');
+  const tlacidlo = document.querySelector('button[onclick="overHesloTestu()"]');
   
-  if (zadaneHeslo === 'SPSTAD123') {
-    hesloOdblokovane = true;
-    renderujObsah(); // Znovu vyrenderuje stránku a odomkne samotný test
-  } else {
-    chybaDiv.textContent = 'Nesprávne prístupové heslo k testu.';
+  if (!zadaneHeslo) return;
+
+  // Vizuálna odozva
+  tlacidlo.textContent = '⏳ Overujem...';
+  tlacidlo.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient.rpc('over_heslo', {
+      zadane_heslo: zadaneHeslo
+    });
+
+    if (error) throw error;
+
+    if (data === true) {
+      hesloOdblokovane = true;
+      renderujObsah(); 
+    } else {
+      chybaDiv.textContent = '❌ Nesprávne prístupové heslo k testu.';
+      chybaDiv.style.display = 'block';
+      tlacidlo.textContent = '🔓 Odomknúť test';
+      tlacidlo.disabled = false;
+    }
+  } catch (err) {
+    chybaDiv.textContent = 'Chyba pri overovaní hesla. Skontrolujte pripojenie.';
     chybaDiv.style.display = 'block';
+    tlacidlo.textContent = '🔓 Odomknúť test';
+    tlacidlo.disabled = false;
   }
 }
 
-async function odhlasitZiaka() {
-  await supabaseClient.auth.signOut();
-  aktivnyUzivatel = null;
-  hesloOdblokovane = false; // Po odhlásení znovu zamkneme test
-  clearInterval(casovacInterval);
-  renderujObsah();
-}
-
-/* --- SUPABASE: Bezpečné vyhodnotenie testu (RPC) --- */
+/* SUPABASE: Bezpečné vyhodnotenie test */
 async function vyhodnotFinalnyTest() {
   clearInterval(casovacInterval);
   
@@ -610,7 +602,6 @@ async function vyhodnotFinalnyTest() {
   kontajnerVysledku.scrollIntoView({ behavior: 'smooth' });
 
   try {
-    // ZMĚNA: supabaseClient
     const { data, error } = await supabaseClient.rpc('vyhodnot_test', {
       ziacke_odpovede: odpovedeZiaka
     });
@@ -1822,17 +1813,14 @@ function renderujObsah() {
   /* Finálny Test so Supabase a Heslom */
   else if (aktivnaSekcia === 'finalny_test') {
     if (!aktivnyUzivatel) {
-      // STAV 1: Žiak nie je prihlásený
       obsahDiv.innerHTML = `
         <section class="sekcia-obsahu aktivny">
           <div class="karta">
             <h2>Finálny Test - Prihlásenie</h2>
             <p>Pre prístup k finálnemu testu sa musíte prihlásiť školským emailom (<strong>@spspp.sk</strong>).</p>
-            
             <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
               <input type="email" id="vstup-email" placeholder="Školský email (napr. richardbaran@spspp.sk)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--border-color);" />
-              <input type="password" id="vstup-heslo" placeholder="Heslo od gmailu (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
-              
+              <input type="password" id="vstup-heslo" placeholder="Heslo (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
               <div style="display: flex; gap: 10px;">
                 <button onclick="spracujAuth(false)" style="flex: 1; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Prihlásiť sa</button>
                 <button onclick="spracujAuth(true)" style="flex: 1; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Nová registrácia</button>
@@ -1843,7 +1831,6 @@ function renderujObsah() {
         </section>
       `;
     } else if (!hesloOdblokovane) {
-      // STAV 2: Žiak je prihlásený, ale musí zadať heslo k testu
       obsahDiv.innerHTML = `
         <section class="sekcia-obsahu aktivny">
           <div class="karta">
@@ -1854,9 +1841,7 @@ function renderujObsah() {
                 <button onclick="odhlasitZiaka()" style="padding: 5px 10px; background: var(--error-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Odhlásiť sa</button>
               </div>
             </div>
-            
             <p>Zadajte prístupové heslo k testu. Toto heslo vám poskytne učiteľ.</p>
-            
             <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
               <input type="password" id="vstup-heslo-test" placeholder="Zadajte heslo k testu" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
               <button onclick="overHesloTestu()" style="width: 100%; padding: 10px; background: var(--success-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🔓 Odomknúť test</button>
