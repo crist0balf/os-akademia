@@ -541,24 +541,27 @@ async function spracujAuth(jeRegistracia) {
   try {
     let data, error;
     if (jeRegistracia) {
-      ({ data, error } = await supabase.auth.signUp({ email: email, password: heslo }));
+      // ZMĚNA: supabaseClient
+      ({ data, error } = await supabaseClient.auth.signUp({ email: email, password: heslo }));
     } else {
-      ({ data, error } = await supabase.auth.signInWithPassword({ email: email, password: heslo }));
+      // ZMĚNA: supabaseClient
+      ({ data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: heslo }));
     }
 
     if (error) throw error;
 
     aktivnyUzivatel = data.user;
-    renderujObsah(); // Znovu vyrenderuje stránku, tentokrát odomkne test
+    renderujObsah(); 
 
   } catch (error) {
-    chybaDiv.textContent = 'Chyba: ' + (error.message.includes('Invalid login') ? 'Nesprávny email alebo heslo.' : error.message);
+    chybaDiv.textContent = 'Chyba: ' + (error.message.includes('Invalid login') ? 'Nesprávny email nebo heslo.' : error.message);
     chybaDiv.style.display = 'block';
   }
 }
 
 async function odhlasitZiaka() {
-  await supabase.auth.signOut();
+  // ZMĚNA: supabaseClient
+  await supabaseClient.auth.signOut();
   aktivnyUzivatel = null;
   clearInterval(casovacInterval);
   renderujObsah();
@@ -574,15 +577,12 @@ async function vyhodnotFinalnyTest() {
   const otazkyDOM = kontajner.querySelectorAll('.otazka-box');
   let odpovedeZiaka = [];
 
-  // Zozbierame len indexy toho, čo žiak klikol. Ziadne spravne odpovede tu nie su!
   otazkyDOM.forEach((box) => {
     const wrapper = box.querySelector('.moznosti-wrapper');
     const vybranaIndex = wrapper.getAttribute('data-vybrana-odpoved');
     const tlacidla = wrapper.querySelectorAll('.tlacidlo-test');
     
-    tlacidla.forEach(btn => btn.disabled = true); // Zablokujeme klikanie
-    
-    // Ak neodpovedal, posielame -1, inak cislo odpovede
+    tlacidla.forEach(btn => btn.disabled = true);
     odpovedeZiaka.push(vybranaIndex !== null ? parseInt(vybranaIndex) : -1);
   });
 
@@ -591,14 +591,13 @@ async function vyhodnotFinalnyTest() {
   kontajnerVysledku.scrollIntoView({ behavior: 'smooth' });
 
   try {
-    // Tu sa deje mágia. Pošleme pole odpovedí do našej SQL funkcie v Supabase
-    const { data, error } = await supabase.rpc('vyhodnot_test', {
+    // ZMĚNA: supabaseClient
+    const { data, error } = await supabaseClient.rpc('vyhodnot_test', {
       ziacke_odpovede: odpovedeZiaka
     });
 
     if (error) throw error;
 
-    // Supabase nám vrátilo hotový výsledok!
     const percenta = data.percenta;
     const znamka = data.znamka;
     const pocetSpravnych = data.pocet_spravnych;
@@ -610,7 +609,6 @@ async function vyhodnotFinalnyTest() {
     else if (znamka === 3) farba = "#ffc107";
     else if (znamka === 4) farba = "#fd7e14";
 
-    // Vykreslenie výsledku
     kontajnerVysledku.innerHTML = `
       <div class="vysledok-box" style="border-color: ${farba}">
         <h3 style="color: ${farba}; font-size: 2.5rem; margin-bottom: 0.5rem;">Známka: ${znamka}</h3>
@@ -618,12 +616,12 @@ async function vyhodnotFinalnyTest() {
         <div style="width: 100%; background: #ddd; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden;">
           <div style="width: ${percenta}%; background: ${farba}; height: 100%;"></div>
         </div>
-        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--success-color);">✅ Výsledok bol bezpečne uložený do databázy.</p>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--success-color);">✅ Výsledok byl bezpečně uložen do databáze.</p>
       </div>
     `;
     
   } catch (error) {
-    kontajnerVysledku.innerHTML = `<p style="color: red; text-align: center;">Nastala chyba pri komunikácii so serverom: ${error.message}</p>`;
+    kontajnerVysledku.innerHTML = `<p style="color: red; text-align: center;">Nastala chyba při komunikaci se serverem: ${error.message}</p>`;
   }
 }
 
@@ -659,9 +657,10 @@ let tmavyRezim = false;
 let aktivnaSekcia = 'informacie';
 let rozbaleneModuly = { modul0: false };
 let casovacInterval;
-const supabaseUrl = 'sb_publishable_pvPft9-gT0p9SkrADx21kg_2dluwYEN';
-const supabaseKey = 'sb_secret_dWfGh5oLpLN6gwmE9pwfBw_Ui6CaAp4';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = 'https://klzqmllullbqygoisklu.supabase.co';
+const supabaseKey = 'sb_publishable_pvPft9-gT0p9SkrADx21kg_2dluwYEN';
+
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 let aktivnyUzivatel = null;
 
 /* Načítaj voľbu tmavého režimu */
@@ -695,7 +694,7 @@ function prepnutieModulu(idModulu) {
 
 /* Zobrazenie obsahu */
 function zobrazObsah(idSekcie) {
-  if (idSekcie === 'finalny_test' && !hesloOdblokované) {
+  if (idSekcie === 'finalny_test' && !aktivnyUzivatel) {
     aktivnaSekcia = idSekcie;
     renderujObsah();
     renderujBocnyPanel();
