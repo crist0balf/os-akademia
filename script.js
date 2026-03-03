@@ -542,6 +542,16 @@ async function spracujAuth(jeRegistracia) {
   }
 }
 
+/* SUPABASE: Odhlásenie žiaka */
+async function odhlasitZiaka() {
+  await supabaseClient.auth.signOut();
+  aktivnyUzivatel = null;
+  hesloOdblokovane = false; // Zamkneme test pre istotu
+  clearInterval(casovacInterval);
+  zobrazObsah('informacie'); // Po odhlásení hodí žiaka na úvodnú stránku
+  renderujBocnyPanel();
+}
+
 /* SUPABASE: funkcia na overenie hesla k testu */
 async function overHesloTestu() {
   const zadaneHeslo = document.getElementById('vstup-heslo-test').value;
@@ -1843,7 +1853,7 @@ function renderujObsah() {
             <p>Pre prístup k finálnemu testu sa musíte prihlásiť školským emailom (<strong>@spspp.sk</strong>).</p>
             <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
               <input type="email" id="vstup-email" placeholder="Školský email (napr. richardbaran@spspp.sk)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid var(--border-color);" />
-              <input type="password" id="vstup-heslo" placeholder="Heslo (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              <input type="password" id="vstup-heslo" placeholder="Heslo (min. 6 znakov)" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" onkeypress="if(event.key === 'Enter') spracujAuth(false)" />
               <div style="display: flex; gap: 10px;">
                 <button onclick="spracujAuth(false)" style="flex: 1; padding: 10px; background: var(--accent-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Prihlásiť sa</button>
                 <button onclick="spracujAuth(true)" style="flex: 1; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer;">Nová registrácia</button>
@@ -1867,7 +1877,7 @@ function renderujObsah() {
             </div>
             <p>Zadajte prístupové heslo k testu. Toto heslo vám poskytne učiteľ.</p>
             <div style="margin-top: 20px; max-width: 400px; background: var(--bg-tertiary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-              <input type="password" id="vstup-heslo-test" placeholder="Zadajte heslo k testu" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" />
+              <input type="password" id="vstup-heslo-test" placeholder="Zadajte heslo k testu" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 4px; border: 1px solid var(--border-color);" onkeypress="if(event.key === 'Enter') overHesloTestu()" />
               <button onclick="overHesloTestu()" style="width: 100%; padding: 10px; background: var(--success-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">🔓 Odomknúť test</button>
               <div id="chyba-heslo-test" style="color: var(--error-color); margin-top: 15px; font-weight: bold; display: none;"></div>
             </div>
