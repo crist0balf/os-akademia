@@ -546,9 +546,9 @@ async function spracujAuth(jeRegistracia) {
 async function odhlasitZiaka() {
   await supabaseClient.auth.signOut();
   aktivnyUzivatel = null;
-  hesloOdblokovane = false; // Zamkneme test pre istotu
+  hesloOdblokovane = false; 
   clearInterval(casovacInterval);
-  zobrazObsah('informacie'); // Po odhlásení hodí žiaka na úvodnú stránku
+  zobrazObsah('informacie');
   renderujBocnyPanel();
 }
 
@@ -560,7 +560,6 @@ async function overHesloTestu() {
   
   if (!zadaneHeslo) return;
 
-  // Vizuálna odozva
   tlacidlo.textContent = '⏳ Overujem...';
   tlacidlo.disabled = true;
 
