@@ -948,6 +948,7 @@ function renderujObsah() {
             <li><strong>Špecifikum:</strong> Nie sú optimalizované na kritický výkon, ale na "dobrý pocit" používateľa. Ak program sekne na 2 sekundy, nič hrozné sa nestane.</li>
             <li><strong>Príklady:</strong> Microsoft Windows, macOS, Linux (Ubuntu, Fedora), ChromeOS.</li>
           </ul>
+          <img src="obrazky/16.png" alt="Desktopové OS" class="obrazok-v-texte">
 
           <h3>2. Serverové OS</h3>
           <p>
@@ -958,6 +959,7 @@ function renderujObsah() {
             <li><strong>Multiusers:</strong> Musia zvládať tisíce pripojených používateľov naraz (napr. webstránka, na ktorú chodí veľa ľudí).</li>
             <li><strong>Príklady:</strong> Windows Server, Red Hat Enterprise Linux (RHEL), Debian, FreeBSD, Solaris.</li>
           </ul>
+          <img src="obrazky/17.png" alt="Serverové OS" class="obrazok-v-texte">
 
           <h3>3. Mobilné OS</h3>
           <p>
@@ -967,6 +969,7 @@ function renderujObsah() {
             <li><strong>Sandbox (Pieskovisko):</strong> Z bezpečnostných dôvodov tu aplikácie nemajú prístup k celému systému. Instagram nemôže čítať dáta z vašej bankovej aplikácie.</li>
             <li><strong>Príklady:</strong> Android (založený na Linuxe), iOS (založený na Unixe/Darwin).</li>
           </ul>
+          <img src="obrazky/18.png" alt="Mobilné OS" class="obrazok-v-texte">
 
           <h3>4. RTOS (Real-Time Operating Systems)</h3>
           <p>
@@ -980,6 +983,7 @@ function renderujObsah() {
             <li><strong>Soft Real-Time:</strong> Ak systém nestihne termín, klesne kvalita, ale nikto nezomrie (napr. streamovanie videa – ak dáta neprídu včas, obraz len sekne).</li>
             <li><strong>Príklady:</strong> QNX (v autách), VxWorks (sondy na Marse), FreeRTOS.</li>
           </ul>
+          <img src="obrazky/19.png" alt="RTOS" class="obrazok-v-texte">
 
           <h3>5. Vstavané (Embedded) OS</h3>
           <p>
@@ -1026,11 +1030,13 @@ function renderujObsah() {
           <p>
             <strong>Windows 1.0 (1985)</strong> bol však sklamaním. Okná sa nemohli prekrývať (kvôli hrozbe žaloby od Apple), navigácia bola neohrabaná a aplikácií bolo málo. Skutočný úspech prišiel až s verziami <strong>3.0 a 3.1</strong> v 90. rokoch, ktoré po prvýkrát priniesli skutočný multitasking a ikonické prostredie, ktoré definovalo modernú prácu v kancelárii.
           </p>
+          <img src="obrazky/20.png" alt="MS-Dos" class="obrazok-v-texte">
 
           <h3>Zmena paradigmy: Windows 95 a internetová vojna</h3>
           <p>
             Vydanie <strong>Windows 95</strong> v auguste 1995 bolo kultúrnym fenoménom. Systém definitívne oddelil svet technických nadšencov od bežných užívateľov. Zaviedol architektúru <strong>Plug and Play</strong>, ktorá (hoci vtedy ešte nestabilná) predznamenala éru, kde sa hardvér už nepripájal zložitým nastavovaním jumperov, ale jednoduchým zapojením.
           </p>
+
           <p>
             V tomto období sa odohrala aj tzv. "Vojna prehliadačov". Microsoft si uvedomil silu internetu neskoro, ale razantne. Integroval <strong>Internet Explorer</strong> priamo do systému Windows 98, čím prakticky zlikvidoval konkurenčný Netscape. Tento krok viedol k historickému antimonopolnému súdu v USA, kde bol Microsoft obvinený zo zneužívania dominantného postavenia na trhu.
           </p>
@@ -1047,6 +1053,7 @@ function renderujObsah() {
           <p>
             K historickému zjednoteniu došlo v roku 2001 s príchodom <strong>Windows XP</strong>. Microsoft zobral stabilné jadro NT a obliekol ho do farebného, užívateľsky prívetivého prostredia. XP sa stal takým úspešným, že paradoxne brzdil inovácie na ďalších 10 rokov, pretože nikto nemal potrebu zo stabilného systému prechádzať inam.
           </p>
+          <img src="obrazky/21.svg" alt="Windows NT" class="obrazok-v-texte">
 
           <h3>Éra moderných kríz a triumfov (2007 – súčasnosť)</h3>
           <p>
@@ -1058,6 +1065,8 @@ function renderujObsah() {
           <p>
             Dnešná éra, reprezentovaná <strong>Windows 10 a 11</strong>, je návratom k logike. Windows 11 prináša čistý, centrovaný dizajn a hlbokú integráciu s <strong>umelou inteligenciou (Copilot)</strong> a cloudovými službami. Systém už nie je len krabicový produkt, ale neustále sa vyvíjajúca služba (Windows as a Service), ktorá reflektuje potreby hybridnej práce a kybernetickej bezpečnosti 21. storočia.
           </p>
+          <img src="obrazky/22.png" alt="Windows 11" class="obrazok-v-texte">
+        
         </div>
       </section>
     `;
@@ -1155,11 +1164,13 @@ function renderujObsah() {
           <p>
             <strong>Windows XP</strong> bol revolučný práve tým, že priniesol stabilitu NT jadra bežným domácim používateľom a definitívne ukončil éru DOSu.
           </p>
+          <img src="obrazky/24.png" alt="Windows XP" class="obrazok-v-texte">
 
           <h3>Prečo je Windows 7 v skutočnosti verzia 6.1?</h3>
           <p>
             Ak sa pozriete do tabuľky vyššie, všimnete si zvláštnosť. Windows 7 má verziu jadra 6.1, Windows 8 má 6.2 a Windows 8.1 je 6.3. Microsoft to urobil zámerne kvôli <strong>spätnej kompatibilite</strong>. Mnoho starších programov kontrolovalo verziu systému, a ak by sa číslo radikálne zmenilo (napr. na 7.0), programy by odmietli fungovať. Až Windows 10 si trúfol skočiť na číslo 10.0.
           </p>
+          <img src="obrazky/23.avif" alt="Windows 7 s verziou 6.1" class="obrazok-v-texte">
 
           <h3>Súčasnosť: Windows ako služba (WaaS)</h3>
           <p>
@@ -1188,6 +1199,7 @@ function renderujObsah() {
             <li><strong>Prístupové práva (ACL):</strong> Umožňuje nastaviť, ktorý používateľ môže otvoriť konkrétny súbor.</li>
             <li><strong>Podpora veľkých súborov:</strong> FAT32 limituje veľkosť jedného súboru na 4 GB, NTFS tento limit prakticky nemá.</li>
           </ul>
+          <img src="obrazky/25.png" alt="NTFS" class="obrazok-v-texte">
 
           <h3>2. Windows Register (Registry)</h3>
           <p>
@@ -1196,11 +1208,13 @@ function renderujObsah() {
           <p>
             <em>Poznámka: Úprava registrov (príkaz regedit) je mocný nástroj, ale nesprávny zásah môže znefunkčniť celý systém.</em>
           </p>
+          <img src="obrazky/26.png" alt="Windows Register" class="obrazok-v-texte">
 
           <h3>3. Bezpečnosť a UAC</h3>
           <p>
             Od verzie Vista obsahuje Windows funkciu <strong>UAC (User Account Control)</strong>. To je to známe okno, ktoré stmaví obrazovku a pýta si povolenie, keď chce program vykonať zmeny v počítači. Slúži na to, aby malvér nemohol na pozadí tajne inštalovať vírusy bez vedomia používateľa.
           </p>
+          <img src="obrazky/27.avif" alt="UAC" class="obrazok-v-texte">
 
           <h3>4. Modrá smrť (BSOD)</h3>
           <p>
@@ -1245,6 +1259,7 @@ function renderujObsah() {
           <p>
             Linus bol frustrovaný z licenčných obmedzení systému MINIX (ktorý sa používal na školách) a chcel si vytvoriť vlastný terminálový emulátor. Pôvodne ho chcel nazvať <strong>Freax</strong> (Free + Freak + X), ale správca FTP servera Ari Lemmke mu vytvoril priečinok s názvom <strong>Linux</strong> (Linus + UNIX). Meno už ostalo.
           </p>
+          <img src="obrazky/28.png" alt="Známy e-mail" class="obrazok-v-texte">
 
           <h3>2. Spojenie s projektom GNU (Svadba rozumu)</h3>
           <p>
@@ -1253,6 +1268,7 @@ function renderujObsah() {
           <p>
             V tom istom čase Richard Stallman a jeho hnutie <strong>FSF (Free Software Foundation)</strong> mali takmer hotový slobodný systém GNU, ale chýbalo im funkčné jadro (ich vlastné jadro Hurd meškalo). Keď sa Linusovo jadro spojilo s nástrojmi GNU, vznikol kompletný systém, ktorý dnes technicky správne nazývame <strong>GNU/Linux</strong>.
           </p>
+          <img src="obrazky/7.png" alt="GNU" class="obrazok-v-texte">
 
           <h3>3. Model Open Source a licencia GPL</h3>
           <p>
@@ -1261,7 +1277,7 @@ function renderujObsah() {
           <p>
             To spustilo lavínu. Tisíce vývojárov po celom svete začali posielať opravy a vylepšenia. Zatiaľ čo Microsoft zamestnával stovky programátorov v jednej budove, na Linuxe pracovali tisíce ľudí cez internet, 24 hodín denne.
           </p>
-          <img src="obrazky/7.png" alt="GNU / Linux" class="obrazok-v-texte">
+          <img src="obrazky/29.png" alt="licencia GPL" class="obrazok-v-texte">
 
           <h3>4. Tux a komercializácia</h3>
           <p>
@@ -1270,6 +1286,7 @@ function renderujObsah() {
           <p>
             Koncom 90. rokov si potenciál Linuxu všimli veľké firmy ako IBM, Oracle či Google. Zistili, že je stabilnejší a lacnejší ako platené riešenia. Vznikli prvé veľké distribúcie ako <strong>Red Hat</strong> (1993) a <strong>Debian</strong> (1993), ktoré priniesli Linux do firemného prostredia.
           </p>
+          <img src="obrazky/30.png" alt="Tux" class="obrazok-v-texte">
 
           <h3>5. Dnešná dominancia</h3>
           <p>
@@ -1280,6 +1297,7 @@ function renderujObsah() {
             <li><strong>Superpočítače:</strong> 100 % z 500 najvýkonnejších počítačov sveta používa Linux.</li>
             <li><strong>Mobily:</strong> Android (najrozšírenejší OS na svete) beží na linuxovom jadre.</li>
           </ul>
+          <img src="obrazky/31.png" alt="FaceBook" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1379,6 +1397,7 @@ function renderujObsah() {
           <p>
             Najpoužívanejší formát súborového systému je dnes <strong>ext4</strong> (Fourth Extended Filesystem), ktorý je extrémne odolný voči fragmentácii disku (preto Linux netreba defragmentovať).
           </p>
+          <img src="obrazky/32.png" alt="ext4" class="obrazok-v-texte">
 
           <h3>2. Terminál a sila príkazového riadka</h3>
           <p>
@@ -1387,6 +1406,7 @@ function renderujObsah() {
           <p>
             <em>Prečo ho používať?</em> Napísať príkaz <code>sudo apt update</code> je často rýchlejšie ako klikanie cez tri okná nastavení.
           </p>
+          <img src="obrazky/33.avif" alt="Linux Terminal" class="obrazok-v-texte">
 
           <h3>3. Inštalácia softvéru: Balíčkovací systém</h3>
           <p>
@@ -1396,6 +1416,7 @@ function renderujObsah() {
             <li>Nemusíte hľadať inštalačky po webe (a riskovať vírusy).</li>
             <li>Systém sa stará o aktualizácie <strong>všetkých</strong> programov naraz, nie len samotného Windows.</li>
           </ul>
+          <img src="obrazky/34.png" alt="Linux Repozitáre" class="obrazok-v-texte">
 
           <h3>4. Bezpečnosť a Root (Superpoužívateľ)</h3>
           <p>
@@ -1404,6 +1425,7 @@ function renderujObsah() {
           <p>
             Ak sa vírus dostane do počítača pod bežným účtom, nemôže zmazať systém, pretože nepozná heslo pre <em>sudo</em>. To robí Linux prirodzene odolným voči väčšine malvéru.
           </p>
+          <img src="obrazky/35.jpg" alt="Linux Root" class="obrazok-v-texte">
 
           <h3>5. Kde všade je Linux?</h3>
           <p>
@@ -1460,6 +1482,7 @@ function renderujObsah() {
           <p>
             Rozhodovali sa medzi systémom <strong>BeOS</strong> (od Jeana-Louisa Gasséeho) a <strong>NeXTSTEP</strong> (od vyhodeného zakladateľa Apple, Steva Jobsa). Apple kúpil NeXT, a s ním sa do firmy vrátil aj Steve Jobs. To zmenilo všetko.
           </p>
+          <img src="obrazky/36.svg" alt="NeXT" class="obrazok-v-texte">
 
           <h3>3. Zrod Mac OS X (2001)</h3>
           <p>
@@ -1469,6 +1492,7 @@ function renderujObsah() {
             <li><strong>Unixové srdce:</strong> Pod krásnym grafickým obalom (Aqua) v skutočnosti beží Unix (konkrétne základ Darwin). To systému dodalo extrémnu stabilitu.</li>
             <li><strong>Aqua rozhranie:</strong> Prvé verzie mali tlačidlá, ktoré vyzerali ako kvapky vody a "lízatká". Jobs vtedy povedal: <em>"Vytvorili sme tlačidlá na obrazovke tak dobre, že ich budete chcieť oblízať."</em></li>
           </ul>
+          <img src="obrazky/37.png" alt="Mac OS X" class="obrazok-v-texte">
 
           <h3>4. Éra "Veľkých mačiek" a "Kalifornie"</h3>
           <p>
@@ -1478,6 +1502,7 @@ function renderujObsah() {
             <li><strong>2001 – 2012 (Mačkovité šelmy):</strong> Verzie sa volali Cheetah, Puma, Jaguar, Panther, Tiger, Leopard, Snow Leopard, Lion, Mountain Lion.</li>
             <li><strong>2013 – súčasnosť (Miesta v Kalifornii):</strong> Od verzie Mavericks prešiel Apple na názvy prírodných pamiatok (Yosemite, El Capitan, Mojave, Sonoma), čím chcel zdôrazniť svoje korene.</li>
           </ul>
+          <img src="obrazky/38.png" alt="Yosemite" class="obrazok-v-texte">
 
           <h3>5. Architektonické skoky</h3>
           <p>
@@ -1487,6 +1512,7 @@ function renderujObsah() {
             <li><strong>2006:</strong> Prechod z procesorov PowerPC na <strong>Intel</strong>. (Umožnilo to inštalovať Windows na Mac).</li>
             <li><strong>2020:</strong> Prechod z Intelu na <strong>Apple Silicon (čipy M1, M2, M3)</strong>. Tým Apple spojil svet počítačov a mobilov, čím získal obrovský náskok vo výkone a výdrži batérie.</li>
           </ul>
+          <img src="obrazky/39.png" alt="Apple Silicon" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1604,6 +1630,7 @@ function renderujObsah() {
             <li><strong>Universal Clipboard:</strong> Skopírujete text (Ctrl+C) na Macu a vložíte ho (Paste) na iPhone. Funguje to magicky.</li>
             <li><strong>AirDrop:</strong> Bezdrôtový prenos súborov medzi zariadeniami, ktorý nevyžaduje nastavovanie siete ani párovanie.</li>
           </ul>
+          <img src="obrazky/40.png" alt="Apple Continuity" class="obrazok-v-texte">
 
           <h3>3. Gatekeeper a Bezpečnosť</h3>
           <p>
@@ -1612,6 +1639,7 @@ function renderujObsah() {
           <p>
             Keď stiahnete aplikáciu z internetu, Gatekeeper skontroluje, či má platný digitálny podpis od Apple (Notarization). Ak nie, systém ju odmietne spustiť, aby zabránil šíreniu malvéru.
           </p>
+          <img src="obrazky/41.png" alt="Apple Gatekeeper" class="obrazok-v-texte">
 
           <h3>4. Unified Memory (Jednotná pamäť)</h3>
           <p>
@@ -1620,6 +1648,7 @@ function renderujObsah() {
           <p>
             Vďaka tomu sa dáta nemusia kopírovať z jedného čipu do druhého. Preto 8 GB RAM na Macu často pôsobí rovnako rýchlo ako 16 GB RAM na bežnom PC.
           </p>
+          <img src="obrazky/42.avif" alt="Apple Unified Memory" class="obrazok-v-texte">
         </div>
       </section>
     `;
@@ -1982,16 +2011,42 @@ function renderujObsah() {
         
         <ul style="line-height: 1.8; margin-left: 20px;">
           <li><strong>Obrázok k definícii OS (Kernel):</strong> <a href="https://cyberhoot.com/sk/cybrary/kernel/" target="_blank">cyberhoot.com</a></li>
+          <li><strong>Obrázok k teórii Operačných systémov:</strong> <a href="https://encyklopediapoznania.sk/clanok/184/operacny-system-os-operating-system" target="_blank">encyklopediapoznania.sk</a></li>
           <li><strong>Obrázok histórie (Pohľad do roku 1968):</strong> <a href="https://touchit.sk/ako-jeden-chlap-v-roku-1968-predviedol-vsetko-co-budu-pocitace-robit-po-nasledujucich-40-rokov-a-nikoho-to-nezaujimalo/465073/" target="_blank">touchit.sk</a></li>
           <li><strong>Rozdelenie OS:</strong> <a href="https://computerguidehub.com/types-of-operating-systems/" target="_blank">computerguidehub.com</a></li>
+          <li><strong>Mobilné OS (iOS vs Android):</strong> <a href="https://momentumsuite.com/software-testing/the-philosophy-and-differences-between-ios-and-android-a-comparative-analysis/" target="_blank">momentumsuite.com</a></li>
+          <li><strong>RTOS (Systém QNX):</strong> <a href="https://www.ezurio.com/documentation/qnx-getting-started-guide?srsltid=AfmBOor9n9UXalHF9gOqhMquex6QLz01MRSjtDwpcYpgyY0VCwNQzgIz" target="_blank">ezurio.com</a></li>
+          <li><strong>Windows (Systém MS-DOS):</strong> <a href="https://cs.wikipedia.org/wiki/MS-DOS" target="_blank">wikipedia.org</a></li>
           <li><strong>Windows (Evolúcia Menu Štart):</strong> <a href="https://www.trustedreviews.com/opinion/windows-95-to-windows-10-how-the-start-menu-has-evolved-2928628" target="_blank">trustedreviews.com</a></li>
+          <li><strong>Windows (Architektúra NT 3.51):</strong> <a href="https://betawiki.net/wiki/Windows_NT_3.51" target="_blank">betawiki.net</a></li>
+          <li><strong>Windows (Legenda Windows XP):</strong> <a href="https://www.itnetwork.cz/zpravodajstvi/software/xp-hrozba" target="_blank">itnetwork.cz</a></li>
+          <li><strong>Windows (Číslovanie verzie 6.1 vo Win 7):</strong> <a href="https://www.giga.de/downloads/windows-7/specials/windows-6.1-was-ist-das/" target="_blank">giga.de</a></li>
+          <li><strong>Windows (Verzia 11):</strong> <a href="https://winclub.pl/topic/48174-windows-11-24h2-atlasrectified-pro/" target="_blank">winclub.pl</a></li>
+          <li><strong>Windows (Súborový systém NTFS):</strong> <a href="https://mettec.net/blog/what-is-ntfs-and-how-does-it-work-a-comprehensive-guide-for-2025/" target="_blank">mettec.net</a></li>
+          <li><strong>Windows (Hierarchia Registrov):</strong> <a href="http://www.windowswally.com/ja/" target="_blank">windowswally.com</a></li>
+          <li><strong>Windows (Bezpečnostné okno UAC):</strong> <a href="https://www.xda-developers.com/user-account-control-explained/" target="_blank">xda-developers.com</a></li>
           <li><strong>Windows (Modrá smrť - BSOD):</strong> <a href="https://touchit.sk/co-robit-ak-windows-10-nejde-spustit-z-dovodu-bsod-s-napisom-critical-process-died/646635/" target="_blank">touchit.sk</a></li>
           <li><strong>Linux (Logo GNU/Linux):</strong> <a href="https://libre2.news.blog/que-es-gnu-linux/" target="_blank">libre2.news.blog</a></li>
+          <li><strong>Linux (Slávny e-mail od L. Torvaldsa):</strong> <a href="https://fossbytes.com/linus-torvaldss-famous-email-first-linux-announcement/" target="_blank">fossbytes.com</a></li>
+          <li><strong>Linux (Licencia GNU GPL):</strong> <a href="https://en.wikipedia.org/wiki/GNU_General_Public_License" target="_blank">wikipedia.org</a></li>
+          <li><strong>Linux (Distribúcia Debian):</strong> <a href="https://hu.wikipedia.org/wiki/Debian" target="_blank">wikipedia.org</a></li>
           <li><strong>Linux (Android a Linux):</strong> <a href="https://www.mojandroid.sk/android-a-linux-si-opat-rozumeju/" target="_blank">mojandroid.sk</a></li>
           <li><strong>Linux (Helikoptéra Ingenuity na Marse):</strong> <a href="https://cs.wikipedia.org/wiki/Ingenuity" target="_blank">wikipedia.org</a></li>
+          <li><strong>Linux (Servery pre Facebook):</strong> <a href="https://www.nextech.sk/a/Facebook-uz-upozorni-majitela-uctu-o-zriadeni-jeho-falosneho-profilu" target="_blank">nextech.sk</a></li>
+          <li><strong>Linux (Súborový systém ext4):</strong> <a href="https://blog.nashtechglobal.com/creating-and-mounting-an-ext4-file-system/" target="_blank">nashtechglobal.com</a></li>
+          <li><strong>Linux (Príkazový riadok / Terminál):</strong> <a href="https://www.makeuseof.com/what-is-linux-command-line/" target="_blank">makeuseof.com</a></li>
+          <li><strong>Linux (Správa repozitárov):</strong> <a href="https://tekneed.com/a-guide-on-how-to-manage-repositories-in-linux/" target="_blank">tekneed.com</a></li>
+          <li><strong>Linux (Práva superpoužívateľa Root):</strong> <a href="https://www.wikihow.com/Become-Root-in-Linux" target="_blank">wikihow.com</a></li>
           <li><strong>macOS (Apple Macintosh z roku 1984):</strong> <a href="https://sk.wikipedia.org/wiki/Apple_Macintosh" target="_blank">wikipedia.org</a></li>
+          <li><strong>macOS (Systém NeXT):</strong> <a href="https://next.fandom.com/wiki/NeXT" target="_blank">fandom.com</a></li>
+          <li><strong>macOS (Logo systému OS X):</strong> <a href="https://logos-world.net/macos-logo/" target="_blank">logos-world.net</a></li>
+          <li><strong>macOS (História počítačov Mac):</strong> <a href="https://mac40th.com" target="_blank">mac40th.com</a></li>
           <li><strong>macOS (Dizajn Big Sur vs. Catalina):</strong> <a href="https://svetapple.sk/zariadenia/mac/macos-big-sur-vs-macos-catalina-pozrite-sa-ako-apple-zmenilo-dizajn/" target="_blank">svetapple.sk</a></li>
           <li><strong>macOS (Súborový systém APFS):</strong> <a href="https://blog.fosketts.net/2016/06/13/macos-sierra-includes-new-apple-file-system-apfs/" target="_blank">blog.fosketts.net</a></li>
+          <li><strong>macOS (Ekosystém a Continuity):</strong> <a href="https://www.iplocation.net/apple-continuity" target="_blank">iplocation.net</a></li>
+          <li><strong>macOS (Bezpečnostná vrstva Gatekeeper):</strong> <a href="https://developer.apple.com/news/?id=saqachfa" target="_blank">developer.apple.com</a></li>
+          <li><strong>macOS (Čipová architektúra Apple Silicon):</strong> <a href="https://www.appleking.sk/blog/apple-predstavil-cip-m5-co-ponukne-a-v-akych-produktoch-sa-objavi" target="_blank">appleking.sk</a></li>
+          <li><strong>macOS (Zdieľaná pamäť Unified Memory):</strong> <a href="https://www.hoxtonmacs.co.uk/blogs/news/what-is-unified-memory" target="_blank">hoxtonmacs.co.uk</a></li>
           <li><strong>Špeciálne OS (Logo ReactOS):</strong> <a href="https://en.wikipedia.org/wiki/ReactOS" target="_blank">wikipedia.org</a></li>
           <li><strong>Špeciálne OS (BeOS / Haiku OS):</strong> <a href="https://appleinsider.com/articles/23/01/12/beos-lives-on-in-the-new-haiku-os-beta-4" target="_blank">appleinsider.com</a></li>
           <li><strong>Špeciálne OS (Terry Davis / TempleOS):</strong> <a href="https://github.com/topics/terry-davis?l=html&o=asc&s=updated" target="_blank">github.com</a></li>

@@ -508,12 +508,16 @@ html.tmavyRezim .tabulka-data tbody tr:nth-of-type(even) {
 /* 9. Štýl pre obrázky v texte */
 .obrazok-v-texte {
   display: block;
-  max-width: 100%;       
-  height: auto;
+  width: 100%;              
+  max-width: 800px;          
+  aspect-ratio: 16 / 9;   
+  object-fit: contain;       
   margin: 20px auto;     
   border-radius: 8px;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-color);
+  background-color: var(--bg-tertiary);
+  padding: 10px;
 }
 
 /* 10. Pridanie päty */
